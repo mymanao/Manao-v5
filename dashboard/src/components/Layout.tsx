@@ -188,10 +188,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   </ListItemIcon>
                   <ListItemText
                     primary={item.label}
-                    slotProps={{ primary: {
-                      fontSize: "0.875rem",
-                      fontWeight: isActive ? 600 : 400,
-                    }}}
+                    slotProps={{
+                      primary: {
+                        fontSize: "0.875rem",
+                        fontWeight: isActive ? 600 : 400,
+                      },
+                    }}
                   />
                 </ListItemButton>
               </Box>

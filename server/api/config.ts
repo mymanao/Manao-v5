@@ -20,7 +20,7 @@ export async function updateUserConfig<K extends keyof Configuration>(
 
 function getDefaultConfig(): Configuration {
   return {
-    prefix: { twitch: "!", kick: "!" },
+    prefix: { twitch: "!", kick: "!", discord: "!" },
     defaultSongs: [],
     disabledCommands: [],
     language: "en",

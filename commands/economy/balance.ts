@@ -20,26 +20,22 @@ export default {
     const t = i18n[ctx.language];
 
     if (args[0]) {
-      // Looking up another user — requires platform API, defer to adapter
       const targetName = args[0].replace(/^@/, "");
-      ctx.emit("lookupUser", {
-        platform: ctx.user.platform,
+      const targetId = await ctx.lookupUser(targetName);
+
+      if (!targetId) {
+        await ctx.reply(t.economy.errorUserNotFound(targetName));
+        return;
+      }
+
+      const balance = getBalance(targetId);
+      ctx.emit("feed", {
+        status: "normal",
+        icon: "👛",
         name: targetName,
-        callback: async (targetId: string | null) => {
-          if (!targetId) {
-            await ctx.reply(t.economy.errorUserNotFound(targetName));
-            return;
-          }
-          const balance = getBalance(targetId);
-          ctx.emit("feed", {
-            status: "normal",
-            icon: "👛",
-            name: targetName,
-            action: `${balance} ${ctx.currency}`,
-          });
-          await ctx.reply(t.economy.currentBalance(balance, ctx.currency));
-        },
+        action: `${balance} ${ctx.currency}`,
       });
+      await ctx.reply(t.economy.currentBalance(balance, ctx.currency));
     } else {
       const id = initAccount(ctx.user.platformID, ctx.user.platform);
       const balance = getBalance(id);

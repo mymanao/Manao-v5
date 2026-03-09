@@ -8,6 +8,7 @@ export async function runCommand(
   input: string,
   context: CommandContext,
   registry: CommandRegistry,
+  disabledCommands: string[] = [],
 ): Promise<void> {
   const { language } = context;
   const t = i18n[language];
@@ -25,6 +26,14 @@ export async function runCommand(
         ? t.command.notFound(commandName, suggestion)
         : t.command.notFoundNoSuggestion(commandName);
       await context.reply(msg);
+      return;
+    }
+
+    // Disabled commands check
+    if (
+      disabledCommands.includes(command.name.en) ||
+      disabledCommands.includes(command.name.th)
+    ) {
       return;
     }
 

@@ -2,6 +2,7 @@ import { logger } from "@/helpers/logger";
 import { addBalance, initAccount, getNickname } from "@/db";
 import { runCommand } from "@/core/runner";
 import { TWITCH } from "@/config";
+// import { initializeEventSub } from "./eventsub";
 import type { Configuration, MessageData } from "@/core/types";
 import type {
   CommandContext,
@@ -173,6 +174,7 @@ export class TwitchAdapter implements PlatformAdapter {
     });
 
     this.chatClient.connect();
+    await initializeEventSub(this.chatClient, this.apiClient);
     logger.info("[Twitch] Adapter started");
   }
 
@@ -226,8 +228,17 @@ export class TwitchAdapter implements PlatformAdapter {
           currency: this.config.currency,
           say: (msg) => this.chatClient.say(channel, msg),
           reply: (msg) => this.chatClient.say(channel, `@${user}, ${msg}`),
-          whisper: (msg) =>
-            this.apiClient.whispers.sendWhisper(TWITCH.BOT.ID, userId, msg),
+          whisper: async (msg) => {
+            if (TWITCH.BOT.ID === userId) {
+              await this.chatClient.say(channel, `@${user}, ${msg}`);
+            } else {
+              await this.apiClient.whispers.sendWhisper(
+                TWITCH.BOT.ID,
+                userId,
+                msg,
+              );
+            }
+          },
           emit: (event, data) => io.emit(event, data),
           lookupUser: async (name) => {
             const twitchUser = await this.apiClient.users.getUserByName(name);

@@ -71,6 +71,7 @@ export const TWITCH = {
   },
   SCOPES: [
     "user:edit",
+    "user:manage:whispers",
     "user:read:email",
     "chat:read",
     "chat:edit",

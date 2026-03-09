@@ -240,16 +240,17 @@ export function ConfigPage() {
                               },
                             })
                           }
-                          slotProps={{ htmlInput:
-                            field === "cooldown"
-                              ? {
-                                  endAdornment: (
-                                    <InputAdornment position="end">
-                                      s
-                                    </InputAdornment>
-                                  ),
-                                }
-                              : undefined
+                          slotProps={{
+                            htmlInput:
+                              field === "cooldown"
+                                ? {
+                                    endAdornment: (
+                                      <InputAdornment position="end">
+                                        s
+                                      </InputAdornment>
+                                    ),
+                                  }
+                                : undefined,
                           }}
                         />
                       </Grid>

@@ -1,5 +1,6 @@
 import { logger } from "@/helpers/logger";
 import { addBalance, initAccount } from "@/db";
+import { runCommand } from "@/core/runner";
 import { DISCORD } from "@/config";
 import type {
   Configuration,
@@ -25,6 +26,7 @@ export class DiscordAdapter implements PlatformAdapter {
   private bot!: Client;
   private messageHandler?: MessageHandler;
   private readonly cooldowns = new Map<string, number>();
+  private readonly sequenceIndex = new Map<string, number>();
 
   constructor(
     private readonly registry: CommandRegistry,
@@ -108,8 +110,9 @@ export class DiscordAdapter implements PlatformAdapter {
         language: lang,
         currency: this.config.currency,
         say: async (msg) => {
-          if (!message.inGuild()) return;
-          await message.channel.send(msg);
+          if (message.inGuild()) {
+            await message.channel.send(msg);
+          }
         },
         reply: async (msg) => {
           await message.reply(msg);
@@ -128,6 +131,18 @@ export class DiscordAdapter implements PlatformAdapter {
           return initAccount(member.id, "discord");
         },
       };
+
+      const prefix = this.config.prefix.discord;
+      if (message.content.startsWith(prefix)) {
+        await runCommand(
+          message.content.slice(prefix.length),
+          ctx,
+          this.registry,
+          this.config.disabledCommands,
+        );
+      } else {
+        await this.handleCustomReply(message.content);
+      }
 
       await this.messageHandler?.(ctx, message.content);
       void this.bot.executeCommand(message);
@@ -149,6 +164,44 @@ export class DiscordAdapter implements PlatformAdapter {
         addBalance(id, amount);
       }
       this.cooldowns.set(id, now);
+    }
+  }
+
+  private async handleCustomReply(message: string): Promise<void> {
+    const lowerMsg = message.toLowerCase();
+
+    for (const reply of this.config.customReplies) {
+      for (const keyword of reply.keywords) {
+        const lowerKey = keyword.toLowerCase();
+        const matched =
+          reply.keywordType === "exact"
+            ? lowerMsg === lowerKey
+            : lowerMsg.includes(lowerKey);
+
+        if (!matched) continue;
+
+        let response = "";
+        if (reply.responseType === "random") {
+          response =
+            reply.responses[
+              Math.floor(Math.random() * reply.responses.length)
+            ] ?? "";
+        } else {
+          const key = reply.keywords.join(",");
+          const idx = this.sequenceIndex.get(key) ?? 0;
+          response = reply.responses[idx] ?? "";
+          this.sequenceIndex.set(key, (idx + 1) % reply.responses.length);
+        }
+
+        if (response) {
+          await this.sendMessage(
+            this.bot.guilds.cache.first()?.id ?? "",
+            response,
+          );
+          logger.info("[Discord] Custom reply sent");
+        }
+        return;
+      }
     }
   }
 }

@@ -42,7 +42,7 @@ export default {
     if (!code) {
       const newCode = generateCode();
       linkCodes.set(newCode, { internalID, expires: Date.now() + CODE_TTL });
-      await ctx.reply(`${t.configuration.linkCodeGenerated()}: ${newCode}`);
+      await ctx.whisper(`${t.configuration.linkCodeGenerated()}: ${newCode}`);
       return;
     }
 

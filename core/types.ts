@@ -158,7 +158,7 @@ export interface ChatReward {
 }
 
 export interface Configuration {
-  prefix: Record<Exclude<Platform, "discord">, string>; // Discord uses slash commands
+  prefix: Record<Platform, string>;
   defaultSongs: SongData[];
   disabledCommands: string[];
   language: Language;
