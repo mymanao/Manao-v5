@@ -58,7 +58,7 @@ export default {
     }
 
     try {
-      linkPlatform(entry.internalID, ctx.user.platform, ctx.user.platformID);
+      linkPlatform(entry.internalID, ctx.user.platformID, ctx.user.platform);
     } catch {
       await ctx.reply(t.configuration.errorAlreadyLinked());
       return;
