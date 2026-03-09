@@ -108,9 +108,8 @@ export class DiscordAdapter implements PlatformAdapter {
         language: lang,
         currency: this.config.currency,
         say: async (msg) => {
-          if (message.channel instanceof BaseGuildTextChannel) {
-            await message.channel.send(msg);
-          }
+          if (!message.inGuild()) return;
+          await message.channel.send(msg);
         },
         reply: async (msg) => {
           await message.reply(msg);
