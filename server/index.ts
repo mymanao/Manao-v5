@@ -14,8 +14,9 @@ export { io } from "./services/socket.io";
 export function createServer(registry: CommandRegistry, lang: Language) {
   const app = new Elysia();
 
-  app.use(staticPlugin({ prefix: "/", assets: "./server/public" }));
+  app.use(staticPlugin({ prefix: "/assets", assets: "./server/public/assets" }));
 
+  app.get("/favicon.ico", () => Bun.file("./server/public/favicon.ico"));
   app.get("/scripts/socket.io/socket.io.js", () =>
     Bun.file("./node_modules/socket.io/client-dist/socket.io.js"),
   );
