@@ -1,5 +1,4 @@
 import { i18n } from "@/i18n";
-import { logger } from "@/helpers/logger";
 import type { Command } from "@/core/types";
 
 export default {

@@ -1,5 +1,5 @@
 import { i18n } from "@/i18n";
-import { getUserConfig, updateUserConfig } from "@/server/api/config";
+import { updateUserConfig } from "@/server/api/config";
 import type { Command } from "@/core/types";
 
 export default {
