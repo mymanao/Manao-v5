@@ -19,6 +19,7 @@
     "@ngrok/ngrok": "^1.7.0",
     "@twurple/api": "^8.0.3",
     "@twurple/auth": "^8.0.3",
+    "@twurple/chat": "^8.0.3",
     "discord.js": "^14.25.1",
     "discordx": "^11.13.3",
     "drizzle-orm": "^0.45.1",

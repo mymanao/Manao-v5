@@ -10,6 +10,7 @@
         "@ngrok/ngrok": "^1.7.0",
         "@twurple/api": "^8.0.3",
         "@twurple/auth": "^8.0.3",
+        "@twurple/chat": "^8.0.3",
         "discord.js": "^14.25.1",
         "discordx": "^11.13.3",
         "drizzle-orm": "^0.45.1",
@@ -31,7 +32,15 @@
   "packages": {
     "@d-fischer/cache-decorators": ["@d-fischer/cache-decorators@4.0.1", "", { "dependencies": { "@d-fischer/shared-utils": "^3.6.3", "tslib": "^2.6.2" } }, "sha512-HNYLBLWs/t28GFZZeqdIBqq8f37mqDIFO6xNPof94VjpKvuP6ROqCZGafx88dk5zZUlBfViV9jD8iNNlXfc4CA=="],
 
+    "@d-fischer/connection": ["@d-fischer/connection@9.0.0", "", { "dependencies": { "@d-fischer/isomorphic-ws": "^7.0.0", "@d-fischer/logger": "^4.2.1", "@d-fischer/shared-utils": "^3.5.0", "@d-fischer/typed-event-emitter": "^3.3.0", "@types/ws": "^8.5.4", "tslib": "^2.4.1", "ws": "^8.11.0" } }, "sha512-Mljp/EbaE+eYWfsFXUOk+RfpbHgrWGL/60JkAvjYixw6KREfi5r17XdUiXe54ByAQox6jwgdN2vebdmW1BT+nQ=="],
+
+    "@d-fischer/deprecate": ["@d-fischer/deprecate@2.0.2", "", {}, "sha512-wlw3HwEanJFJKctwLzhfOM6LKwR70FPfGZGoKOhWBKyOPXk+3a9Cc6S9zhm6tka7xKtpmfxVIReGUwPnMbIaZg=="],
+
     "@d-fischer/detect-node": ["@d-fischer/detect-node@3.0.1", "", {}, "sha512-0Rf3XwTzuTh8+oPZW9SfxTIiL+26RRJ0BRPwj5oVjZFyFKmsj9RGfN2zuTRjOuA3FCK/jYm06HOhwNK+8Pfv8w=="],
+
+    "@d-fischer/escape-string-regexp": ["@d-fischer/escape-string-regexp@5.0.0", "", {}, "sha512-7eoxnxcto5eVPW5h1T+ePnVFukmI9f/ZR9nlBLh1t3kyzJDUNor2C+YW9H/Terw3YnbZSDgDYrpCJCHtOtAQHw=="],
+
+    "@d-fischer/isomorphic-ws": ["@d-fischer/isomorphic-ws@7.0.2", "", { "peerDependencies": { "ws": "^8.2.0" } }, "sha512-xK+qIJUF0ne3dsjq5Y3BviQ4M+gx9dzkN+dPP7abBMje4YRfow+X9jBgeEoTe5e+Q6+8hI9R0b37Okkk8Vf0hQ=="],
 
     "@d-fischer/logger": ["@d-fischer/logger@4.2.4", "", { "dependencies": { "@d-fischer/detect-node": "^3.0.1", "@d-fischer/shared-utils": "^3.6.1", "tslib": "^2.5.0" } }, "sha512-TFMZ/SVW8xyQtyJw9Rcuci4betSKy0qbQn2B5+1+72vVXeO8Qb1pYvuwF5qr0vDGundmSWq7W8r19nVPnXXSvA=="],
 
@@ -199,6 +208,8 @@
 
     "@twurple/auth": ["@twurple/auth@8.0.3", "", { "dependencies": { "@d-fischer/logger": "^4.2.1", "@d-fischer/shared-utils": "^3.6.1", "@d-fischer/typed-event-emitter": "^3.3.1", "@twurple/api-call": "8.0.3", "@twurple/common": "8.0.3", "tslib": "^2.0.3" } }, "sha512-Xlv+WNXmGQir4aBXYeRCqdno5XurA6jzYTIovSEHa7FZf3AMHMFqtzW7yqTCUn4iOahfUSA2TIIxmxFM0wis0g=="],
 
+    "@twurple/chat": ["@twurple/chat@8.0.3", "", { "dependencies": { "@d-fischer/cache-decorators": "^4.0.0", "@d-fischer/deprecate": "^2.0.2", "@d-fischer/logger": "^4.2.1", "@d-fischer/rate-limiter": "^1.1.0", "@d-fischer/shared-utils": "^3.6.1", "@d-fischer/typed-event-emitter": "^3.3.0", "@twurple/common": "8.0.3", "ircv3": "^0.33.0", "tslib": "^2.0.3" }, "peerDependencies": { "@twurple/auth": "8.0.3" } }, "sha512-rhm6xhWKp+4zYFimaEj5fPm6lw/yjrAOsGXXSvPDsEqFR+fc0cVXzmHmglTavkmEELRajFiqNBKZjg73JZWhTQ=="],
+
     "@twurple/common": ["@twurple/common@8.0.3", "", { "dependencies": { "@d-fischer/shared-utils": "^3.6.1", "klona": "^2.0.4", "tslib": "^2.0.3" } }, "sha512-JQ2lb5qSFT21Y9qMfIouAILb94ppedLHASq49Fe/AP8oq0k3IC9Q7tX2n6tiMzGWqn+n8MnONUpMSZ6FhulMXA=="],
 
     "@types/bun": ["@types/bun@1.3.10", "", { "dependencies": { "bun-types": "1.3.10" } }, "sha512-0+rlrUrOrTSskibryHbvQkDOWRJwJZqZlxrUs1u4oOoTln8+WIXBPmAuCF35SWB2z4Zl3E84Nl/D0P7803nigQ=="],
@@ -294,6 +305,8 @@
     "help-me": ["help-me@5.0.0", "", {}, "sha512-7xgomUX6ADmcYzFik0HzAxh/73YlKR9bmFzf51CZwR+b6YtzU2m0u49hQCqV6SvlqIqsaxovfwdvbnsw3b/zpg=="],
 
     "iconv-lite": ["iconv-lite@0.7.2", "", { "dependencies": { "safer-buffer": ">= 2.1.2 < 3.0.0" } }, "sha512-im9DjEDQ55s9fL4EYzOAv0yMqmMBSZp6G0VvFyTMPKWxiSBHUj9NW/qqLmXUwXrrM7AvqSlTCfvqRb0cM8yYqw=="],
+
+    "ircv3": ["ircv3@0.33.0", "", { "dependencies": { "@d-fischer/connection": "^9.0.0", "@d-fischer/escape-string-regexp": "^5.0.0", "@d-fischer/logger": "^4.2.1", "@d-fischer/shared-utils": "^3.5.0", "@d-fischer/typed-event-emitter": "^3.3.0", "klona": "^2.0.5", "tslib": "^2.4.1" } }, "sha512-7rK1Aial3LBiFycE8w3MHiBBFb41/2GG2Ll/fR2IJj1vx0pLpn1s+78K+z/I4PZTqCCSp/Sb4QgKMh3NMhx0Kg=="],
 
     "is-docker": ["is-docker@3.0.0", "", { "bin": { "is-docker": "cli.js" } }, "sha512-eljcgEDlEns/7AXFosB5K/2nCM4P7FQPkGc/DWLy5rmFEWvZayGrik1d9/QIY5nJ4f9YsVvBkA6kJpHn9rISdQ=="],
 
