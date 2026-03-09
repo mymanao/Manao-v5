@@ -40,26 +40,19 @@ export default {
 
     const targetName = target.replace(/^@/, "");
 
-    ctx.emit("lookupUser", {
-      platform: ctx.user.platform,
-      name: targetName,
-      callback: async (targetId: string | null) => {
-        if (!targetId) {
-          await ctx.reply(t.economy.errorUserNotFound(targetName));
-          return;
-        }
-        initAccount(targetId, ctx.user.platform);
-        setBalance(targetId, amount);
-        ctx.emit("feed", {
-          status: "normal",
-          icon: "📩",
-          name: `System ➡ ${targetName}`,
-          action: `${amount} ${ctx.currency}`,
-        });
-        await ctx.reply(
-          t.economy.transactionSuccess(amount, ctx.currency, targetName),
-        );
-      },
+    const targetId = await ctx.lookupUser(targetName);
+    if (!targetId) {
+      await ctx.reply(t.economy.errorUserNotFound(targetName));
+      return;
+    }
+    initAccount(targetId, ctx.user.platform);
+    setBalance(targetId, amount);
+    ctx.emit("feed", {
+      status: "normal",
+      icon: "📩",
+      name: `System ➡ ${targetName}`,
+      action: `${amount} ${ctx.currency}`,
     });
+    await ctx.reply(t.economy.transactionSuccess(amount, ctx.currency, targetName));
   },
 } satisfies Command;
