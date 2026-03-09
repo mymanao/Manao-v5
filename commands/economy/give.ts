@@ -45,35 +45,26 @@ export default {
       return;
     }
 
-    // Target lookup is platform-specific — handled by the command context
-    // For cross-platform support, target must be an internal ID or same-platform user
     const targetName = target.replace(/^@/, "");
     if (targetName.toLowerCase() === ctx.user.name.toLowerCase()) {
       await ctx.reply(t.economy.errorSelfTransfer());
       return;
     }
 
-    // Note: cross-platform user lookup requires platform API — defer to adapter layer
-    ctx.emit("lookupUser", {
-      platform: ctx.user.platform,
-      name: targetName,
-      callback: async (targetId: string | null) => {
-        if (!targetId) {
-          await ctx.reply(t.economy.errorUserNotFound(targetName));
-          return;
-        }
-        subtractBalance(id, amount);
-        addBalance(targetId, amount);
-        ctx.emit("feed", {
-          status: "normal",
-          icon: "📩",
-          name: `${ctx.user.name} ➡ ${targetName}`,
-          action: `${amount} ${ctx.currency}`,
-        });
-        await ctx.reply(
-          t.economy.transactionSuccess(amount, ctx.currency, targetName),
-        );
-      },
+    const targetId = await ctx.lookupUser(targetName);
+    if (!targetId) {
+      await ctx.reply(t.economy.errorUserNotFound(targetName));
+      return;
+    }
+
+    subtractBalance(id, amount);
+    addBalance(targetId, amount);
+    ctx.emit("feed", {
+      status: "normal",
+      icon: "📩",
+      name: `${ctx.user.name} ➡ ${targetName}`,
+      action: `${amount} ${ctx.currency}`,
     });
+    await ctx.reply(t.economy.transactionSuccess(amount, ctx.currency, targetName));
   },
 } satisfies Command;
