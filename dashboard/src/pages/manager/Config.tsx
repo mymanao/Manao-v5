@@ -173,8 +173,8 @@ export function ConfigPage() {
             Command Prefixes
           </Typography>
           <Grid container spacing={2}>
-            {(["twitch", "kick"] as const).map((p) => (
-              <Grid size={{ xs: 6 }} key={p}>
+            {(["twitch", "kick", "discord"] as const).map((p) => (
+              <Grid size={{ xs: 6, sm: 4 }} key={p}>
                 <TextField
                   fullWidth
                   size="small"
@@ -244,12 +244,12 @@ export function ConfigPage() {
                             htmlInput:
                               field === "cooldown"
                                 ? {
-                                    endAdornment: (
-                                      <InputAdornment position="end">
-                                        s
-                                      </InputAdornment>
-                                    ),
-                                  }
+                                  endAdornment: (
+                                    <InputAdornment position="end">
+                                      s
+                                    </InputAdornment>
+                                  ),
+                                }
                                 : undefined,
                           }}
                         />

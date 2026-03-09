@@ -132,7 +132,7 @@ export class DiscordAdapter implements PlatformAdapter {
         },
       };
 
-      const prefix = this.config.prefix.discord;
+      const prefix = this.config.prefix.discord ?? "!";
       if (message.content.startsWith(prefix)) {
         await runCommand(
           message.content.slice(prefix.length),
@@ -185,7 +185,7 @@ export class DiscordAdapter implements PlatformAdapter {
           response =
             reply.responses[
               Math.floor(Math.random() * reply.responses.length)
-            ] ?? "";
+              ] ?? "";
         } else {
           const key = reply.keywords.join(",");
           const idx = this.sequenceIndex.get(key) ?? 0;

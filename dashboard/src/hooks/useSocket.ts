@@ -36,11 +36,16 @@ export function useSocket() {
 
 export function useSocketEvent<T>(event: string, handler: (data: T) => void) {
   const { socket } = useSocket();
+  const handlerRef = useRef(handler);
+  useEffect(() => {
+    handlerRef.current = handler;
+  });
 
   useEffect(() => {
-    socket.on(event, handler);
+    const stable = (data: T) => handlerRef.current(data);
+    socket.on(event, stable);
     return () => {
-      socket.off(event, handler);
+      socket.off(event, stable);
     };
-  }, [socket, event, handler]);
+  }, [socket, event]);
 }

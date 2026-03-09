@@ -88,7 +88,7 @@ export interface ChatReward {
 }
 
 export interface Configuration {
-  prefix: Record<Exclude<Platform, "discord">, string>;
+  prefix: Record<Platform, string>;
   defaultSongs: SongData[];
   disabledCommands: string[];
   language: Language;

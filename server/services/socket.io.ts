@@ -8,13 +8,15 @@ export const songQueue: SongRequestData[] = [];
 function handleConnection(socket: Socket): void {
   logger.info(`[Socket] ${socket.id} connected`);
 
+  socket.emit("songQueue", songQueue);
+
   socket.on("disconnect", () => {
     logger.info(`[Socket] ${socket.id} disconnected`);
   });
 
   socket.on("songEnded", () => {
     songQueue.shift();
-    socket.emit("songPlayNext", songQueue);
+    io.emit("songPlayNext", songQueue);
   });
 
   socket.on("songQueueFetch", () => {
