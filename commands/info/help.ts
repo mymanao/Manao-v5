@@ -1,8 +1,8 @@
 import { i18n } from "@/i18n";
-import type { Command, CommandRegistry } from "@/core/types";
+import type { Command } from "@/core/types";
+import type { CommandRegistry } from "@/core/registry";
 
-// Registry is injected at startup — passed via emit or closure
-let registry: CommandRegistry;
+let registry: CommandRegistry | undefined;
 export function setRegistry(r: CommandRegistry) {
   registry = r;
 }
@@ -22,6 +22,11 @@ export default {
     const t = i18n[ctx.language];
     const lang = ctx.language;
 
+    if (!registry) {
+      await ctx.reply(t.command.error);
+      return;
+    }
+
     if (args[0]) {
       const cmd = registry?.find(args[0]);
       if (!cmd) {
@@ -30,12 +35,12 @@ export default {
       }
 
       const argsList = (cmd.arguments ?? [])
-        .map((arg) =>
-          arg.required
-            ? ` | <${arg.name[lang]}> - ${arg.description[lang]}`
-            : ` | [${arg.name[lang]}] - ${arg.description[lang]}`,
-        )
-        .join("");
+      .map((arg) =>
+        arg.required
+          ? ` | <${arg.name[lang]}> - ${arg.description[lang]}`
+          : ` | [${arg.name[lang]}] - ${arg.description[lang]}`,
+      )
+      .join("");
 
       const aliases = cmd.aliases?.[lang]?.join(", ");
       const aliasStr = aliases ? ` (${aliases})` : "";
