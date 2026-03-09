@@ -1,0 +1,327 @@
+import { writeFileSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+import { logger } from "@/helpers/logger";
+import { addBalance, initAccount, getNickname } from "@/db";
+import { runCommand } from "@/core/runner";
+import { i18n } from "@/i18n";
+import { TWITCH } from "@/config";
+import type { Configuration, MessageData } from "@/core/types";
+import type { CommandContext, MessageHandler, PlatformAdapter } from "@/core/types";
+import type { CommandRegistry } from "@/core/registry";
+import { ApiClient } from "@twurple/api";
+import {
+  buildEmoteImageUrl,
+  ChatClient,
+  type ChatMessage,
+  parseEmotePositions,
+} from "@twurple/chat";
+import { type AccessToken, RefreshingAuthProvider } from "@twurple/auth";
+import { io } from "@/server/services/socket.io";
+
+
+
+type UserType = "bot" | "broadcaster";
+
+
+
+
+
+function persistTokenToEnv(userType: UserType, token: AccessToken): void {
+  try {
+    const envPath = join(process.cwd(), ".env");
+    let envContent = readFileSync(envPath, "utf-8");
+    const prefix = userType === "bot" ? "TWITCH_BOT" : "BROADCASTER";
+    envContent = envContent
+    .replace(
+      new RegExp(`^${prefix}_ACCESS_TOKEN=.*$`, "m"),
+      `${prefix}_ACCESS_TOKEN=${token.accessToken}`,
+    )
+    .replace(
+      new RegExp(`^${prefix}_REFRESH_TOKEN=.*$`, "m"),
+      `${prefix}_REFRESH_TOKEN=${token.refreshToken ?? ""}`,
+    );
+    writeFileSync(envPath, envContent, "utf-8");
+    logger.info(`[Twitch] Persisted refreshed ${userType} token`);
+  } catch (err) {
+    logger.error(`[Twitch] Failed to persist token: ${err}`);
+  }
+}
+
+function buildAuthProvider(): RefreshingAuthProvider {
+  if (!TWITCH.CLIENT_ID || !TWITCH.CLIENT_SECRET) {
+    throw new Error("Missing Twitch client ID or secret");
+  }
+
+  const authProvider = new RefreshingAuthProvider({
+    clientId: TWITCH.CLIENT_ID,
+    clientSecret: TWITCH.CLIENT_SECRET,
+  });
+
+  authProvider.onRefresh(async (userId, newToken) => {
+    const userType: UserType = userId === TWITCH.BOT.ID ? "bot" : "broadcaster";
+    const target = userType === "bot" ? TWITCH.BOT : TWITCH.BROADCASTER;
+    target.ACCESS_TOKEN = newToken.accessToken;
+    target.REFRESH_TOKEN = newToken.refreshToken ?? "";
+    persistTokenToEnv(userType, newToken);
+    logger.info(`[Twitch] Refreshed ${userType} token`);
+  });
+
+  const buildTokens = (type: UserType): AccessToken => {
+    const tokens = type === "bot" ? TWITCH.BOT : TWITCH.BROADCASTER;
+    if (!tokens.ID) throw new Error(`Missing ${type} ID`);
+    if (!tokens.ACCESS_TOKEN || !tokens.REFRESH_TOKEN) {
+      throw new Error(`Missing ${type} Twitch tokens`);
+    }
+    return {
+      accessToken: tokens.ACCESS_TOKEN,
+      refreshToken: tokens.REFRESH_TOKEN,
+      scope: TWITCH.SCOPES,
+      expiresIn: 0,
+      obtainmentTimestamp: Date.now(),
+    };
+  };
+
+  authProvider.addUser(TWITCH.BOT.ID as string, buildTokens("bot"), ["chat"]);
+
+  if (TWITCH.BROADCASTER.ACCESS_TOKEN && TWITCH.BROADCASTER.REFRESH_TOKEN) {
+    authProvider.addUser(TWITCH.BROADCASTER.ID as string, buildTokens("broadcaster"));
+  }
+
+  return authProvider;
+}
+
+
+
+
+
+async function processEmotes(message: string, msgObj: ChatMessage): Promise<string> {
+  let processed = message;
+  const emotes = parseEmotePositions(message, msgObj.emoteOffsets);
+  for (const emote of emotes) {
+    const url = buildEmoteImageUrl(emote.id, { size: "3.0" });
+    processed = processed.replaceAll(emote.name, `<img src="${url}" alt="${emote.name}" /> `);
+  }
+  return processed;
+}
+
+async function processBadges(
+  badges: Map<string, string>,
+  apiClient: ApiClient,
+): Promise<string[]> {
+  try {
+    const globalBadges = await apiClient.chat.getGlobalBadges();
+    const badgeList: string[] = [];
+    for (const badge of badges.keys()) {
+      const found = globalBadges.find(
+        (b) => b.getVersion("1")?.title?.toLowerCase().split(" ").join("-") === badge,
+      );
+      const link = found?.getVersion("1")?.getImageUrl(4);
+      if (link) badgeList.push(link);
+    }
+    return badgeList;
+  } catch (err) {
+    logger.error(`[Twitch] Failed to process badges: ${err}`);
+    return [];
+  }
+}
+
+
+
+
+
+export class TwitchAdapter implements PlatformAdapter {
+  readonly platform = "twitch" as const;
+
+  private chatClient!: ChatClient;
+  private apiClient!: ApiClient;
+  private messageHandler?: MessageHandler;
+  private readonly cooldowns = new Map<string, number>();
+  private readonly sequenceIndex = new Map<string, number>();
+
+  constructor(
+    private readonly registry: CommandRegistry,
+    private readonly config: Configuration,
+  ) {}
+
+  async start(): Promise<void> {
+    const authProvider = buildAuthProvider();
+    this.apiClient = new ApiClient({ authProvider });
+
+    const channel = TWITCH.BROADCASTER.CHANNEL;
+    if (!channel) throw new Error("BROADCASTER_CHANNEL not set");
+
+    this.chatClient = new ChatClient({ authProvider, channels: [channel] });
+
+    this.chatClient.onConnect(() => {
+      logger.info(`[Twitch] Connected to ${channel}`);
+    });
+
+    this.chatClient.onMessage(async (channelName, user, message, msgObj) => {
+      const userId = msgObj.userInfo?.userId;
+      const channelId = msgObj.channelId;
+      if (!userId || !channelId) return;
+
+      await this.handleMessage(channelName, user, userId, channelId, message, msgObj);
+    });
+
+    this.chatClient.connect();
+    logger.info("[Twitch] Adapter started");
+  }
+
+  async stop(): Promise<void> {
+    await this.chatClient?.quit();
+    logger.info("[Twitch] Adapter stopped");
+  }
+
+  async sendMessage(channel: string, message: string): Promise<void> {
+    await this.chatClient.say(channel, message);
+  }
+
+  onMessage(handler: MessageHandler): void {
+    this.messageHandler = handler;
+  }
+
+  
+
+  private async handleMessage(
+    channel: string,
+    user: string,
+    userId: string,
+    channelId: string,
+    message: string,
+    msgObj: ChatMessage,
+  ): Promise<void> {
+    try {
+      const prefix = this.config.prefix.twitch;
+
+      if (message.startsWith(prefix)) {
+        const id = initAccount(userId, "twitch");
+        const lang = this.config.language;
+        const t = i18n[lang];
+
+        const isMod = msgObj.userInfo.isMod;
+        const isBroadcaster = userId === channelId;
+
+        const ctx: CommandContext = {
+          user: {
+            id,
+            name: user,
+            platform: "twitch",
+            platformID: userId,
+            roles: {
+              isFollower: false, // requires EventSub — set via eventsub handler
+              isSubscriber: msgObj.userInfo.isSubscriber,
+              isVIP: msgObj.userInfo.isVip,
+              isModerator: isMod,
+              isBroadcaster,
+            },
+          },
+          channel,
+          language: lang,
+          currency: this.config.currency,
+          say: (msg) => this.chatClient.say(channel, msg),
+          reply: (msg) => this.chatClient.say(channel, `@${user}, ${msg}`),
+          whisper: (msg) => this.chatClient.whisper(user, msg),
+          emit: (event, data) => io.emit(event, data),
+        };
+
+        await runCommand(message.slice(prefix.length), ctx, this.registry);
+        await this.messageHandler?.(ctx, message);
+      } else {
+        await this.handleChatReward(userId, message, msgObj);
+        await this.handleCustomReply(channel, message);
+      }
+    } catch (err) {
+      logger.error(`[Twitch] Error handling message from ${user}: ${err}`);
+    }
+  }
+
+  private async handleChatReward(
+    userId: string,
+    message: string,
+    msgObj: ChatMessage,
+  ): Promise<void> {
+    const id = initAccount(userId, "twitch");
+    const { chatRewards } = this.config;
+    const reward = chatRewards.twitch;
+    const now = Date.now();
+    const last = this.cooldowns.get(id) ?? 0;
+
+    if (now - last > reward.cooldown * 1000) {
+      if (Math.random() < reward.chance / 100) {
+        const amount = Math.floor(Math.random() * (reward.maximum - reward.minimum + 1)) + reward.minimum;
+        addBalance(id, amount);
+      }
+      this.cooldowns.set(id, now);
+    }
+
+    const nickname = getNickname(id);
+    const processedMessage = await processEmotes(message, msgObj);
+    const badges = await processBadges(msgObj.userInfo.badges, this.apiClient);
+
+    const role = msgObj.userInfo.isBroadcaster
+      ? "broadcaster"
+      : msgObj.userInfo.isMod
+        ? "mod"
+        : msgObj.userInfo.isVip
+          ? "vip"
+          : msgObj.userInfo.isSubscriber
+            ? "sub"
+            : "normal";
+
+    const messageData: MessageData = {
+      from: "twitch",
+      user: nickname
+        ? `${msgObj.userInfo.displayName} (${nickname})`
+        : msgObj.userInfo.displayName,
+      message: processedMessage,
+      id: msgObj.id,
+      roles: {
+        isFollower: false,
+        isSubscriber: msgObj.userInfo.isSubscriber,
+        isVIP: msgObj.userInfo.isVip,
+        isModerator: msgObj.userInfo.isMod,
+        isBroadcaster: msgObj.userInfo.isBroadcaster,
+      },
+      color: msgObj.userInfo.color ?? "#FFFFFF",
+      badges,
+    };
+
+    io.emit("message", messageData);
+  }
+
+  private async handleCustomReply(channel: string, message: string): Promise<void> {
+    const lowerMsg = message.toLowerCase();
+
+    for (const reply of this.config.customReplies) {
+      for (const keyword of reply.keywords) {
+        const lowerKey = keyword.toLowerCase();
+        const matched =
+          reply.keywordType === "exact"
+            ? lowerMsg === lowerKey
+            : lowerMsg.includes(lowerKey);
+
+        if (!matched) continue;
+
+        let response = "";
+        if (reply.responseType === "random") {
+          response = reply.responses[Math.floor(Math.random() * reply.responses.length)] ?? "";
+        } else {
+          const key = reply.keywords.join(",");
+          const idx = this.sequenceIndex.get(key) ?? 0;
+          response = reply.responses[idx] ?? "";
+          this.sequenceIndex.set(key, (idx + 1) % reply.responses.length);
+        }
+
+        if (response) {
+          await this.chatClient.say(channel, response);
+          logger.info(`[Twitch] Custom reply sent`);
+        }
+        return;
+      }
+    }
+  }
+
+  
+}
+
