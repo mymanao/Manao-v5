@@ -59,6 +59,9 @@ export interface CommandContext {
   reply: (message: string) => Promise<void>;
   whisper: (message: string) => Promise<void>;
   emit: <T = unknown>(event: string, data: T) => void;
+
+  // Platform-specific user lookup by display name → internal ID
+  lookupUser: (name: string) => Promise<string | null>;
 }
 
 export interface PlatformAdapter {
