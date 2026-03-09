@@ -1,7 +1,7 @@
 import { Database } from "bun:sqlite";
 import { desc, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/bun-sqlite";
-import type { Platform } from "@core/types";
+import type { Platform } from "@/core/types";
 import * as schema from "./schema";
 
 const sqlite = new Database("./bot-data.sqlite", { create: true });
