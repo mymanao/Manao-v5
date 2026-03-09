@@ -1,5 +1,5 @@
 import { Database } from "bun:sqlite";
-import { desc, eq, sql } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/bun-sqlite";
 import type { Platform } from "@core/types";
 import * as schema from "./schema";
