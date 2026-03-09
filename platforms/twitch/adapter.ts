@@ -1,7 +1,6 @@
 import { logger } from "@/helpers/logger";
 import { addBalance, initAccount, getNickname } from "@/db";
 import { runCommand } from "@/core/runner";
-import { i18n } from "@/i18n";
 import { TWITCH } from "@/config";
 import type { Configuration, MessageData } from "@/core/types";
 import type {
