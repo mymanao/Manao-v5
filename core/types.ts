@@ -1,0 +1,170 @@
+//#region Primitive Types
+export type Language = "en" | "th"
+export type Platform = "twitch" | "kick" | "discord"
+export type Permission = "everyone" | "follower" | "subscriber" | "vip" | "moderator" | "broadcaster";
+export interface Localized<T = string> {
+  en: T;
+  th: T;
+}
+
+//#endregion
+
+//#region Command Types
+export interface CommandArgument {
+  name: Localized;
+  description: Localized;
+  required?: boolean;
+}
+
+export interface ResolvedCommandArgument {
+  name: string;
+  description: string;
+  required?: boolean;
+}
+
+export interface Command {
+  name: Localized;
+  description: Localized;
+  aliases?: Localized<string[]>;
+  arguments?: CommandArgument[];
+  permission?: Permission;
+  platforms?: Platform[];
+  execute: (context: CommandContext, args: string[]) => Promise<void>;
+}
+//#endregion
+
+//#region Command Context
+export interface CommandUser {
+  id: string;
+  name: string;
+  platform: Platform;
+  platformID: string;
+  roles: {
+    isFollower: boolean;
+    isSubscriber: boolean;
+    isVIP: boolean;
+    isModerator: boolean;
+    isBroadcaster: boolean;
+  }
+}
+
+export interface CommandContext {
+  user: CommandUser;
+  channel: string;
+  language: Language;
+  currency: string;
+
+  // Methods to send messages back to the user
+  say: (message: string) => Promise<void>;
+  reply: (message: string) => Promise<void>;
+  whisper: (message: string) => Promise<void>;
+  emit: <T = unknown>(event: string, data: T) => void;
+}
+//#endregion
+
+//#region Platform Adapter
+export interface PlatformAdapter {
+  readonly platform: Platform;
+  start: () => Promise<void>;
+  stop: () => Promise<void>;
+  sendMessage: (channel: string, message: string) => Promise<void>;
+  onMessage: (handler: MessageHandler) => void;
+}
+
+export type MessageHandler = (context: CommandContext, message: string) => Promise<void>;
+//#endregion
+
+//#region Feed & Overlays
+export type FeedStatus = "neutral" | "normal" | "success" | "warning" | "danger";
+
+export interface FeedEvent {
+  status: FeedStatus;
+  icon: string;
+  name: string;
+  action: string;
+}
+
+export interface MessageData {
+  from: Platform;
+  user: string;
+  message: string;
+  id: string;
+  roles: {
+    isFollower: boolean;
+    isSubscriber: boolean;
+    isVIP: boolean;
+    isModerator: boolean;
+    isBroadcaster: boolean;
+  }
+  color: string;
+  badges: string[];
+}
+//#endregion
+
+//#region Music
+export interface SongData {
+  title: string;
+  author: string;
+  thumbnail: string;
+  id: string;
+}
+
+export interface SongRequestData extends SongData {
+  requestedBy: string;
+}
+//#endregion
+
+//#region User Data
+export interface UserData {
+  id: string;
+  money: number;
+  nickname: string | null;
+}
+//#endregion
+
+//#region Configuration
+export interface CustomMessages {
+  onFollow: Localized;
+  onSubscribe: Localized;
+  onGiftSubscribe: Localized;
+  onRaid: Localized;
+  onCheer: Localized;
+}
+
+export interface CustomReplies {
+  keywordType: "includes" | "exact";
+  responseType: "random" | "sequential";
+  keywords: string[];
+  responses: string[];
+}
+
+export interface SoundReward {
+  id: string;
+  title: string;
+  cost: number;
+  prompt: string;
+  isEnabled: boolean;
+  userInputRequired: boolean;
+  globalCooldown: number; // In seconds
+  soundFile: string | null;
+}
+
+export interface ChatReward {
+  minimum: number;
+  maximum: number;
+  chance: number; // 0 - 100;
+  cooldown: number; // In seconds
+}
+
+export interface Configuration {
+  prefix: Record<Exclude<Platform, "discord">, string>; // Discord uses slash commands
+  defaultSongs: SongData[];
+  disabledCommands: string[];
+  language: Language;
+  currency: string;
+  customMessages: CustomMessages;
+  customReplies: CustomReplies[];
+  soundRewards: SoundReward[];
+  chatRewards: Record<Platform, ChatReward>
+}
+//#endregion
