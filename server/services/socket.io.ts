@@ -1,7 +1,7 @@
 import { logger } from "@/helpers/logger";
 import { SOCKET_PORT } from "@/config";
 import { Server, type Socket } from "socket.io";
-import type {SongRequestData} from "@core/types.ts";
+import type {SongRequestData} from "@/core/types.ts";
 
 export const songQueue: SongRequestData[] = [];
 
