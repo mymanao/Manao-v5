@@ -41,7 +41,7 @@ export async function runCommand(
     const { roles } = context.user;
 
     if (permission === "broadcaster" && !roles.isBroadcaster) {
-      await context.reply(t.command.broadcasterOnly);
+      await context.reply(t.command.permissionDenied);
       return;
     }
 
@@ -50,7 +50,7 @@ export async function runCommand(
       !roles.isModerator &&
       !roles.isBroadcaster
     ) {
-      await context.reply(t.command.moderatorOnly);
+      await context.reply(t.command.permissionDenied);
       return;
     }
 
