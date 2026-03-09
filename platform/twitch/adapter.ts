@@ -169,7 +169,7 @@ export class TwitchAdapter implements PlatformAdapter {
   }
 
   async stop(): Promise<void> {
-    await this.chatClient?.quit();
+    this.chatClient?.quit();
     logger.info("[Twitch] Adapter stopped");
   }
 
@@ -221,7 +221,7 @@ export class TwitchAdapter implements PlatformAdapter {
           currency: this.config.currency,
           say: (msg) => this.chatClient.say(channel, msg),
           reply: (msg) => this.chatClient.say(channel, `@${user}, ${msg}`),
-          whisper: (msg) => this.chatClient.whisper(user, msg),
+          whisper: (msg) => this.apiClient.whispers.sendWhisper(TWITCH.BOT.ID, userId, msg),
           emit: (event, data) => io.emit(event, data),
         };
 
