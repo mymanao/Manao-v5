@@ -1,9 +1,25 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { resolve } from "node:path";
+import { rmSync, existsSync } from "node:fs";
+
+// Custom plugin: clean only assets/ and index.html, leave sounds/ etc. intact
+function cleanBuildPlugin() {
+  return {
+    name: "clean-build",
+    buildStart() {
+      const outDir = resolve(__dirname, "../server/public");
+      const targets = ["assets", "index.html"];
+      for (const t of targets) {
+        const p = resolve(outDir, t);
+        if (existsSync(p)) rmSync(p, { recursive: true, force: true });
+      }
+    },
+  };
+}
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), cleanBuildPlugin()],
   resolve: {
     alias: {
       "@": resolve(__dirname, "src"),
@@ -20,7 +36,7 @@ export default defineConfig({
   },
   build: {
     outDir: "../server/public",
-    emptyOutDir: true,
+    emptyOutDir: false,
     rollupOptions: {
       output: {
         manualChunks: {

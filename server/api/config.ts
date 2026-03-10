@@ -43,6 +43,7 @@ function getDefaultConfig(): Configuration {
     },
     customReplies: [],
     soundRewards: [],
+    soundboard: [],
     chatRewards: {
       twitch: { minimum: 1, maximum: 4, chance: 75, cooldown: 60 },
       kick: { minimum: 1, maximum: 4, chance: 75, cooldown: 60 },

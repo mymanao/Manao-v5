@@ -31,9 +31,9 @@ import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { api } from "@/hooks/useApi";
-import type { Configuration, CustomReply } from "@/types/api";
+import type { Configuration, CustomReplies } from "@/types/api";
 
-const emptyReply = (): CustomReply => ({
+const emptyReply = (): CustomReplies => ({
   keywordType: "includes",
   responseType: "random",
   keywords: [],
@@ -41,13 +41,13 @@ const emptyReply = (): CustomReply => ({
 });
 
 export function RepliesPage() {
-  const [replies, setReplies] = useState<CustomReply[]>([]);
+  const [replies, setReplies] = useState<CustomReplies[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editIdx, setEditIdx] = useState<number | null>(null);
   const [form, setForm] = useState<
-    CustomReply & { keywordsStr: string; responsesStr: string }
+    CustomReplies & { keywordsStr: string; responsesStr: string }
   >({
     ...emptyReply(),
     keywordsStr: "",
@@ -70,7 +70,7 @@ export function RepliesPage() {
     void load();
   }, [load]);
 
-  const saveAll = async (next: CustomReply[]) => {
+  const saveAll = async (next: CustomReplies[]) => {
     await api.post("/api/config", { customReplies: next });
     setReplies(next);
   };
@@ -95,7 +95,7 @@ export function RepliesPage() {
   const handleSave = async () => {
     try {
       setSaving(true);
-      const reply: CustomReply = {
+      const reply: CustomReplies = {
         keywordType: form.keywordType,
         responseType: form.responseType,
         keywords: form.keywordsStr

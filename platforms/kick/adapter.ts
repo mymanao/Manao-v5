@@ -150,7 +150,7 @@ export class KickAdapter implements PlatformAdapter {
         await this.messageHandler?.(ctx, message);
       } else {
         await this.handleChatReward(id);
-        await this.handleCustomReply(message);
+        await this.handleCustomReplies(message);
       }
     } catch (err) {
       logger.error(`[Kick] Error handling message from ${user}: ${err}`);
@@ -173,7 +173,7 @@ export class KickAdapter implements PlatformAdapter {
     }
   }
 
-  private async handleCustomReply(message: string): Promise<void> {
+  private async handleCustomReplies(message: string): Promise<void> {
     const lowerMsg = message.toLowerCase();
 
     for (const reply of this.config.customReplies) {

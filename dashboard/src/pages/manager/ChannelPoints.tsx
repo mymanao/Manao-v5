@@ -141,11 +141,7 @@ export function ChannelPointsPage() {
             Sound rewards redeemable via Twitch Channel Points.
           </Typography>
         </Box>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={openCreate}
-        >
+        <Button variant="contained" startIcon={<AddIcon />} onClick={openCreate}>
           Add Reward
         </Button>
       </Stack>
@@ -159,9 +155,7 @@ export function ChannelPointsPage() {
       <Paper>
         {rewards.length === 0 ? (
           <Box sx={{ p: 4, textAlign: "center" }}>
-            <Typography color="text.secondary">
-              No sound rewards yet.
-            </Typography>
+            <Typography color="text.secondary">No sound rewards yet.</Typography>
           </Box>
         ) : (
           <TableContainer>
@@ -226,11 +220,7 @@ export function ChannelPointsPage() {
                         </IconButton>
                       </Tooltip>
                       <Tooltip title="Delete">
-                        <IconButton
-                          size="small"
-                          color="error"
-                          onClick={() => handleDelete(r.id)}
-                        >
+                        <IconButton size="small" color="error" onClick={() => handleDelete(r.id)}>
                           <DeleteIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>
@@ -243,61 +233,37 @@ export function ChannelPointsPage() {
         )}
       </Paper>
 
-      <Dialog
-        open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
-        maxWidth="sm"
-        fullWidth
-      >
+      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{editId ? "Edit Reward" : "New Reward"}</DialogTitle>
         <Divider />
         <DialogContent sx={{ pt: 2 }}>
           <Stack spacing={2}>
             <TextField
-              size="small"
-              fullWidth
-              label="Title"
-              required
+              size="small" fullWidth label="Title" required
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
             />
             <TextField
-              size="small"
-              fullWidth
-              label="Cost"
-              type="number"
+              size="small" fullWidth label="Cost" type="number"
               value={form.cost}
-              onChange={(e) =>
-                setForm({ ...form, cost: Number(e.target.value) })
-              }
+              onChange={(e) => setForm({ ...form, cost: Number(e.target.value) })}
               slotProps={{ htmlInput: { min: 0 } }}
             />
             <TextField
-              size="small"
-              fullWidth
-              label="Description/Prompt"
+              size="small" fullWidth label="Description/Prompt"
               value={form.prompt}
               onChange={(e) => setForm({ ...form, prompt: e.target.value })}
             />
             <TextField
-              size="small"
-              fullWidth
-              label="Cooldown (seconds)"
-              type="number"
+              size="small" fullWidth label="Cooldown (seconds)" type="number"
               value={form.globalCooldown}
-              onChange={(e) =>
-                setForm({ ...form, globalCooldown: Number(e.target.value) })
-              }
+              onChange={(e) => setForm({ ...form, globalCooldown: Number(e.target.value) })}
               slotProps={{ htmlInput: { min: 0 } }}
             />
             <TextField
-              size="small"
-              fullWidth
-              label="Sound file path"
+              size="small" fullWidth label="Sound file path"
               value={form.soundFile ?? ""}
-              onChange={(e) =>
-                setForm({ ...form, soundFile: e.target.value || null })
-              }
+              onChange={(e) => setForm({ ...form, soundFile: e.target.value || null })}
               placeholder="./sounds/mySound.mp3"
             />
           </Stack>

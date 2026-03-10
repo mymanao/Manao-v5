@@ -251,7 +251,7 @@ export class TwitchAdapter implements PlatformAdapter {
         await this.messageHandler?.(ctx, message);
       } else {
         await this.handleChatReward(userId, message, msgObj);
-        await this.handleCustomReply(channel, message);
+        await this.handleCustomReplies(channel, message);
       }
     } catch (err) {
       logger.error(`[Twitch] Error handling message from ${user}: ${err}`);
@@ -304,7 +304,7 @@ export class TwitchAdapter implements PlatformAdapter {
     io.emit("message", messageData);
   }
 
-  private async handleCustomReply(
+  private async handleCustomReplies(
     channel: string,
     message: string,
   ): Promise<void> {

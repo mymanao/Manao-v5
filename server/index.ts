@@ -8,6 +8,7 @@ import { registerCustomCommandsAPI } from "./api/custom-commands";
 import { registerMusicAPI } from "./api/music";
 import type { CommandRegistry } from "@/core/registry";
 import type { Language } from "@/core/types";
+import {registerSoundboardAPI} from "@/server/api/soundboard.ts";
 
 export { io } from "./services/socket.io";
 
@@ -25,6 +26,7 @@ export function createServer(registry: CommandRegistry, lang: Language) {
   registerConfigAPI(app);
   registerCustomCommandsAPI(app);
   registerMusicAPI(app);
+  registerSoundboardAPI(app);
 
   app.get("/*", () => Bun.file("./server/public/index.html"));
 

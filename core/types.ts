@@ -124,6 +124,19 @@ export interface UserData {
   nickname: string | null;
 }
 
+export interface CustomCommand {
+  id: string;
+  name: string;
+  description: string;
+  aliases: string;
+  arguments: string;
+  permission: Permission;
+  code: string;
+  isEnabled: boolean;
+  createdAt: number;
+  updatedAt: number;
+}
+
 export interface CustomMessages {
   onFollow: Localized;
   onSubscribe: Localized;
@@ -137,6 +150,11 @@ export interface CustomReplies {
   responseType: "random" | "sequential";
   keywords: string[];
   responses: string[];
+}
+
+export interface SoundEntry {
+  name: string;
+  url: string;
 }
 
 export interface SoundReward {
@@ -166,5 +184,6 @@ export interface Configuration {
   customMessages: CustomMessages;
   customReplies: CustomReplies[];
   soundRewards: SoundReward[];
+  soundboard: { name: string; url: string }[];
   chatRewards: Record<Platform, ChatReward>;
 }

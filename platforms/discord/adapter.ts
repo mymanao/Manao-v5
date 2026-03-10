@@ -141,7 +141,7 @@ export class DiscordAdapter implements PlatformAdapter {
           this.config.disabledCommands,
         );
       } else {
-        await this.handleCustomReply(message.content);
+        await this.handleCustomReplies(message.content);
       }
 
       await this.messageHandler?.(ctx, message.content);
@@ -167,7 +167,7 @@ export class DiscordAdapter implements PlatformAdapter {
     }
   }
 
-  private async handleCustomReply(message: string): Promise<void> {
+  private async handleCustomReplies(message: string): Promise<void> {
     const lowerMsg = message.toLowerCase();
 
     for (const reply of this.config.customReplies) {

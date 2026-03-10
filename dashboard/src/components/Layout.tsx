@@ -18,6 +18,7 @@ import ChatIcon from "@mui/icons-material/Chat";
 import GraphicEqIcon from "@mui/icons-material/GraphicEq";
 import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import QueueMusicIcon from "@mui/icons-material/QueueMusic";
+import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import RedeemIcon from "@mui/icons-material/Redeem";
 import ForumIcon from "@mui/icons-material/Forum";
 import WifiIcon from "@mui/icons-material/Wifi";
@@ -36,6 +37,8 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { label: "Home", icon: <DashboardIcon />, path: "/" },
+  { label: "Song Queue", icon: <QueueMusicIcon />, path: "/queue" },
+  { label: "Soundboard", icon: <VolumeUpIcon />, path: "/soundboard" },
   {
     label: "Commands",
     icon: <TerminalIcon />,
@@ -46,14 +49,14 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Custom Replies", icon: <ForumIcon />, path: "/replies" },
   { label: "Channel Points", icon: <RedeemIcon />, path: "/channel-points" },
   {
-    label: "Song Queue",
-    icon: <QueueMusicIcon />,
-    path: "/queue",
+    label: "Chat Overlay",
+    icon: <ChatIcon />,
+    path: "/overlay/chat",
     section: "Overlays",
   },
-  { label: "Chat Overlay", icon: <ChatIcon />, path: "/overlay/chat" },
   { label: "Feed Overlay", icon: <GraphicEqIcon />, path: "/overlay/feed" },
   { label: "Music Overlay", icon: <MusicNoteIcon />, path: "/overlay/music" },
+  { label: "Sound Overlay", icon: <VolumeUpIcon />, path: "/overlay/sound" },
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {

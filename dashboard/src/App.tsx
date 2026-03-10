@@ -11,6 +11,8 @@ import { QueuePage } from "./pages/Queue";
 import { ChatOverlay } from "./pages/overlay/Chat";
 import { FeedOverlay } from "./pages/overlay/Feed";
 import { MusicOverlay } from "./pages/overlay/Music";
+import { SoundOverlay } from "./pages/overlay/Sound";
+import { SoundboardPage } from "./pages/Soundboard.tsx";
 
 export function App() {
   return (
@@ -28,6 +30,8 @@ export function App() {
             <Route path="/overlay/chat" element={<ChatOverlay />} />
             <Route path="/overlay/feed" element={<FeedOverlay />} />
             <Route path="/overlay/music" element={<MusicOverlay />} />
+            <Route path="/overlay/sound" element={<SoundOverlay />} />
+            <Route path="/soundboard" element={<SoundboardPage />} />
           </Routes>
         </Layout>
       </BrowserRouter>
