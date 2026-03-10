@@ -81,7 +81,7 @@ const emptyForm = (): CustomCommandForm => ({
   description: "",
   aliases: "",
   permission: "everyone",
-  code: 'await ctx.reply("Hello world!");',
+  code: 'await context.reply("Hello world!");',
 });
 
 export function CommandsPage() {
