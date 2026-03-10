@@ -201,13 +201,13 @@ export function CommandsPage() {
             placeholder="Search commands…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            InputProps={{
+            slotProps={{ htmlInput: {
               startAdornment: (
                 <InputAdornment position="start">
                   <SearchIcon fontSize="small" />
                 </InputAdornment>
               ),
-            }}
+            }}}
             sx={{ width: 280 }}
           />
         </Box>
@@ -434,9 +434,9 @@ export function CommandsPage() {
               rows={5}
               value={form.code}
               onChange={(e) => setForm({ ...form, code: e.target.value })}
-              InputProps={{
+              slotProps={{ htmlInput: {
                 sx: { fontFamily: "monospace", fontSize: "0.8rem" },
-              }}
+              }}}
             />
           </Stack>
         </DialogContent>
