@@ -7,6 +7,10 @@ export class CommandRegistry {
     this.commands.set(command.name.en, command);
   }
 
+  unregister(nameEn: string): void {
+    this.commands.delete(nameEn);
+  }
+
   registerAll(commands: Command[]): void {
     for (const command of commands) {
       this.register(command);

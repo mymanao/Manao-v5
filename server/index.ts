@@ -24,7 +24,7 @@ export function createServer(registry: CommandRegistry, lang: Language) {
 
   registerCommandsAPI(app, registry, lang);
   registerConfigAPI(app);
-  registerCustomCommandsAPI(app);
+  registerCustomCommandsAPI(app, registry);
   registerMusicAPI(app);
   registerSoundboardAPI(app);
 

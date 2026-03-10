@@ -1,7 +1,9 @@
 import { TWITCH, DISCORD, KICK } from "@/config";
 import { logger } from "@/helpers/logger";
 import { CommandRegistry } from "@/core/registry";
+import { buildCustomCommand } from "@/core/custom-commands";
 import { getUserConfig } from "@/server/api/config";
+import { getCustomCommands } from "@/db";
 import { startServer } from "@/server";
 import { setRegistry } from "@/commands/info/help";
 
@@ -79,7 +81,12 @@ registry.registerAll([
 
 setRegistry(registry);
 
-logger.info(`[Manao] Loaded ${registry.size()} commands`);
+const customCommands = getCustomCommands();
+for (const row of customCommands) {
+  registry.register(buildCustomCommand(row));
+}
+
+logger.info(`[Manao] Loaded ${registry.size()} commands (${customCommands.length} custom)`);
 
 if (TWITCH.ENABLED) {
   const { TwitchAdapter } = await import("@/platforms/twitch/adapter");

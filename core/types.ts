@@ -31,6 +31,7 @@ export interface Command {
   arguments?: CommandArgument[];
   permission?: Permission;
   platforms?: Platform[];
+  isCustom?: boolean;
   execute: (context: CommandContext, args: string[]) => Promise<void>;
 }
 

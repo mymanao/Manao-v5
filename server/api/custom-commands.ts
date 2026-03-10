@@ -7,6 +7,8 @@ import {
   updateCustomCommand,
   deleteCustomCommand,
 } from "@/db";
+import type { CommandRegistry } from "@/core/registry";
+import { buildCustomCommand } from "@/core/custom-commands";
 
 const permissionSchema = z.enum([
   "everyone",
@@ -29,7 +31,16 @@ const createCommandSchema = z.object({
 
 const updateCommandSchema = createCommandSchema.partial();
 
-export function registerCustomCommandsAPI(app: Elysia) {
+function reloadCustomCommands(registry: CommandRegistry) {
+  for (const cmd of registry.all()) {
+    if (cmd.isCustom) registry.unregister(cmd.name.en);
+  }
+  for (const row of getCustomCommands()) {
+    registry.register(buildCustomCommand(row));
+  }
+}
+
+export function registerCustomCommandsAPI(app: Elysia, registry: CommandRegistry) {
   app.get("/api/custom-commands", () => {
     return getCustomCommands();
   });
@@ -47,6 +58,7 @@ export function registerCustomCommandsAPI(app: Elysia) {
     }
     try {
       const id = createCustomCommand(parsed.data);
+      reloadCustomCommands(registry);
       return { success: true, id };
     } catch (err) {
       return { success: false, error: String(err) };
@@ -63,6 +75,7 @@ export function registerCustomCommandsAPI(app: Elysia) {
     }
     try {
       updateCustomCommand(id, parsed.data);
+      reloadCustomCommands(registry);
       return { success: true };
     } catch (err) {
       return { success: false, error: String(err) };
@@ -73,6 +86,7 @@ export function registerCustomCommandsAPI(app: Elysia) {
     const command = getCustomCommand(id);
     if (!command) return { error: "Command not found" };
     deleteCustomCommand(id);
+    reloadCustomCommands(registry);
     return { success: true };
   });
 
