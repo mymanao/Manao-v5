@@ -64,7 +64,11 @@ export class DiscordAdapter implements PlatformAdapter {
       await this.handleMessage(message);
     });
 
-    await importx(`${dirname(import.meta.url)}/{events,commands}/**/*.{ts,js}`);
+    try {
+      await importx(`${dirname(import.meta.url)}/{events,commands}/**/*.{ts,js}`);
+    } catch {
+      logger.info("[Discord] No slash commands or events found — skipping importx");
+    }
     await this.bot.login(DISCORD.BOT_TOKEN);
   }
 
@@ -141,7 +145,7 @@ export class DiscordAdapter implements PlatformAdapter {
           this.config.disabledCommands,
         );
       } else {
-        await this.handleCustomReplies(message.content);
+        await this.handleCustomReplies(message);
       }
 
       await this.messageHandler?.(ctx, message.content);
@@ -167,8 +171,8 @@ export class DiscordAdapter implements PlatformAdapter {
     }
   }
 
-  private async handleCustomReplies(message: string): Promise<void> {
-    const lowerMsg = message.toLowerCase();
+  private async handleCustomReplies(message: Message): Promise<void> {
+    const lowerMsg = message.content.toLowerCase();
 
     for (const reply of this.config.customReplies) {
       for (const keyword of reply.keywords) {
@@ -194,10 +198,7 @@ export class DiscordAdapter implements PlatformAdapter {
         }
 
         if (response) {
-          await this.sendMessage(
-            this.bot.guilds.cache.first()?.id ?? "",
-            response,
-          );
+          if (!message.channel.isDMBased()) await message.channel.send(response);
           logger.info("[Discord] Custom reply sent");
         }
         return;
