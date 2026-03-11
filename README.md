@@ -55,26 +55,26 @@ Contributions to the wiki are welcome.
 
 ### Chat Commands
 
-| Category        | Command         | Description                                            |
-|-:---------------|-:---------------|-:------------------------------------------------------|
-| **Moderation**  | `announce`      | Broadcast an announcement to chat.                     |
-|                 | `game`          | Update the stream's current category.                  |
-|                 | `shoutout`      | Trigger a native Twitch shoutout.                      |
-|                 | `stream`        | Update the stream title.                               |
-| **Economy**     | `balance`       | Check user wallet balance.                             |
-|                 | `gamble`        | Wager currency.                                        |
-|                 | `give`          | Transfer currency to another user.                     |
-|                 | `autobet`       | Execute multiple automated wagers.                     |
-|                 | `leaderboard`   | Display top balances.                                  |
-| **Social**      | `eat`           | RNG food selection.                                    |
-|                 | `hate` / `love` | RNG affinity calculators.                              |
-|                 | `stomp`         | Chat interaction command.                              |
-| **Info**        | `help`          | Display available commands.                            |
-|                 | `uptime`        | Show current stream duration.                          |
-|                 | `version`       | Show current bot version.                              |
-| **Preferences** | `nickname`      | Set local alias (syncs with chat overlay).             |
-|                 | `language`      | Toggle bot response language (EN/TH).                  |
-| **Music**       | `song-*`        | Queue management (`sq`, `sd`, `rm`, `sk`, `sr`, `np`). |
+| Category         | Command         | Description                                            |
+|:-----------------|:----------------|:-------------------------------------------------------|
+| **Moderation**   | `announce`      | Broadcast an announcement to chat.                     |
+|                  | `game`          | Update the stream's current category.                  |
+|                  | `shoutout`      | Trigger a native Twitch shoutout.                      |
+|                  | `stream`        | Update the stream title.                               |
+| **Economy**      | `balance`       | Check user wallet balance.                             |
+|                  | `gamble`        | Wager currency.                                        |
+|                  | `give`          | Transfer currency to another user.                     |
+|                  | `autobet`       | Execute multiple automated wagers.                     |
+|                  | `leaderboard`   | Display top balances.                                  |
+| **Social**       | `eat`           | RNG food selection.                                    |
+|                  | `hate` / `love` | RNG affinity calculators.                              |
+|                  | `stomp`         | Chat interaction command.                              |
+| **Info**         | `help`          | Display available commands.                            |
+|                  | `uptime`        | Show current stream duration.                          |
+|                  | `version`       | Show current bot version.                              |
+| **Preferences**  | `nickname`      | Set local alias (syncs with chat overlay).             |
+|                  | `language`      | Toggle bot response language (EN/TH).                  |
+| **Music**        | `song-*`        | Queue management (`sq`, `sd`, `rm`, `sk`, `sr`, `np`). |
 
 ### Custom Commands
 
@@ -113,7 +113,7 @@ context.emit("event", data)     // Emit a custom event that can be listened to b
 Add these URLs as Browser Sources in OBS, Streamlabs, or any broadcast software:
 
 | Overlay      | URL                                   |
-|--:-----------|--:------------------------------------|
+|:-------------|:--------------------------------------|
 | Chat Overlay | `http://localhost:3000/overlay/chat`  |
 | Event Feed   | `http://localhost:3000/overlay/feed`  |
 | Music Player | `http://localhost:3000/overlay/music` |
