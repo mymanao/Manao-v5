@@ -31,14 +31,14 @@ async function persistTokenToEnv(
     const prefix = userType === "bot" ? "TWITCH_BOT" : "BROADCASTER";
     let envContent = await Bun.file(envPath).text();
     envContent = envContent
-      .replace(
-        new RegExp(`^${prefix}_ACCESS_TOKEN=.*$`, "m"),
-        `${prefix}_ACCESS_TOKEN=${token.accessToken}`,
-      )
-      .replace(
-        new RegExp(`^${prefix}_REFRESH_TOKEN=.*$`, "m"),
-        `${prefix}_REFRESH_TOKEN=${token.refreshToken ?? ""}`,
-      );
+    .replace(
+      new RegExp(`^${prefix}_ACCESS_TOKEN=.*$`, "m"),
+      `${prefix}_ACCESS_TOKEN=${token.accessToken}`,
+    )
+    .replace(
+      new RegExp(`^${prefix}_REFRESH_TOKEN=.*$`, "m"),
+      `${prefix}_REFRESH_TOKEN=${token.refreshToken ?? ""}`,
+    );
     await Bun.write(envPath, envContent);
     logger.info(`[Twitch] Persisted refreshed ${userType} token`);
   } catch (err) {
@@ -247,7 +247,7 @@ export class TwitchAdapter implements PlatformAdapter {
           },
         };
 
-        await runCommand(message.slice(prefix.length), ctx, this.registry);
+        await runCommand(message.slice(prefix.length), ctx, this.registry, this.config.disabledCommands);
         await this.messageHandler?.(ctx, message);
       } else {
         await this.handleChatReward(userId, message, msgObj);
@@ -325,7 +325,7 @@ export class TwitchAdapter implements PlatformAdapter {
           response =
             reply.responses[
               Math.floor(Math.random() * reply.responses.length)
-            ] ?? "";
+              ] ?? "";
         } else {
           const key = reply.keywords.join(",");
           const idx = this.sequenceIndex.get(key) ?? 0;
