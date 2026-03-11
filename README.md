@@ -113,7 +113,7 @@ context.emit("event", data)     // Emit a custom event that can be listened to b
 Add these URLs as Browser Sources in OBS, Streamlabs, or any broadcast software:
 
 | Overlay      | URL                                   |
-|-:------------|-:-------------------------------------|
+|--:-----------|--:------------------------------------|
 | Chat Overlay | `http://localhost:3000/overlay/chat`  |
 | Event Feed   | `http://localhost:3000/overlay/feed`  |
 | Music Player | `http://localhost:3000/overlay/music` |
