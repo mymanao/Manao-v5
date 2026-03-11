@@ -15,17 +15,17 @@ export default function KickPage({
   onBack: () => void;
   onReload: () => Promise<void>;
 }) {
-  const [enabled, setEnabled] = useState(config.kick.enabled);
-  const [clientId, setClientId] = useState(config.kick.clientId);
-  const [clientSecret, setClientSecret] = useState(config.kick.clientSecret);
-  const [ngrokAuthtoken, setNgrokAuthtoken] = useState(config.kick.ngrokAuthtoken);
-  const [ngrokDomain, setNgrokDomain] = useState(config.kick.ngrokDomain);
-  const [hasTokens, setHasTokens] = useState(config.kick.hasTokens);
+  const [enabled, setEnabled] = useState(config.kick.enabled ?? false);
+  const [clientId, setClientId] = useState(config.kick.clientId ?? "");
+  const [clientSecret, setClientSecret] = useState(config.kick.clientSecret ?? "");
+  const [ngrokAuthtoken, setNgrokAuthtoken] = useState(config.kick.ngrokAuthtoken ?? "");
+  const [ngrokDomain, setNgrokDomain] = useState(config.kick.ngrokDomain ?? "");
+  const [hasTokens, setHasTokens] = useState(config.kick.hasTokens ?? false);
   const [authorizing, setAuthorizing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const hasCredentials = clientId.length > 0 && clientSecret.length > 0;
+  const hasCredentials = (clientId?.length ?? 0) > 0 && (clientSecret?.length ?? 0) > 0;
 
   const authorize = async () => {
     setAuthorizing(true);

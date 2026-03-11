@@ -192,7 +192,7 @@ export function createSetupServer() {
       twitch: {
         enabled: env.USE_TWITCH === "true",
         clientId: env.TWITCH_CLIENT_ID ?? "",
-        clientSecret: env.TWITCH_CLIENT_SECRET,
+        clientSecret: env.TWITCH_CLIENT_SECRET ?? "",
         botId: env.TWITCH_BOT_ID ?? "",
         broadcasterId: env.BROADCASTER_ID ?? "",
         broadcasterChannel: env.BROADCASTER_CHANNEL ?? "",
@@ -206,7 +206,7 @@ export function createSetupServer() {
       kick: {
         enabled: env.USE_KICK === "true",
         clientId: env.KICK_CLIENT_ID ?? "",
-        clientSecret: env.KICK_CLIENT_SECRET,
+        clientSecret: env.KICK_CLIENT_SECRET ?? "",
         hasTokens: !!env.KICK_ACCESS_TOKEN,
         ngrokAuthtoken: env.NGROK_AUTHTOKEN ?? "",
         ngrokDomain: env.NGROK_DOMAIN ?? "",

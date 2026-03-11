@@ -13,8 +13,8 @@ export default function DiscordPage({
   onBack: () => void;
   onReload: () => Promise<void>;
 }) {
-  const [enabled, setEnabled] = useState(config.discord.enabled);
-  const [botToken, setBotToken] = useState(config.discord.token);
+  const [enabled, setEnabled] = useState(config.discord.enabled ?? false);
+  const [botToken, setBotToken] = useState(config.discord.token ?? "");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

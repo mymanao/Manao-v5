@@ -15,17 +15,17 @@ export default function TwitchPage({
   onBack: () => void;
   onReload: () => Promise<void>;
 }) {
-  const [enabled, setEnabled] = useState(config.twitch.enabled);
+  const [enabled, setEnabled] = useState(config.twitch.enabled ?? false);
   const [clientId, setClientId] = useState(config.twitch.clientId ?? "");
   const [clientSecret, setClientSecret] = useState(config.twitch.clientSecret ?? "");
-  const [botAuthed, setBotAuthed] = useState(config.twitch.hasTokens);
-  const [broadcasterAuthed, setBroadcasterAuthed] = useState(config.twitch.hasTokens);
+  const [botAuthed, setBotAuthed] = useState(config.twitch.hasTokens ?? false);
+  const [broadcasterAuthed, setBroadcasterAuthed] = useState(config.twitch.hasTokens ?? false);
   const [authorizing, setAuthorizing] = useState<"bot" | "broadcaster" | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const hasCredentials = clientId.length > 0 && clientSecret.length > 0;
+  const hasCredentials = (clientId?.length ?? 0) > 0 && (clientSecret?.length ?? 0) > 0;
 
   const authorize = async (role: "bot" | "broadcaster") => {
     setError(null);
