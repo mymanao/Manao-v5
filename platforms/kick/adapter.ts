@@ -9,9 +9,9 @@ import type {
   PlatformAdapter,
 } from "@/core/types";
 import type { CommandRegistry } from "@/core/registry";
-import type { ChatMessageEvent } from "@manaobot/kick/types";
 import { KickIt } from "@manaobot/kickit";
 import { io } from "@/server/services/socket.io";
+import type {ChatMessageEvent} from "@manaobot/kick/types";
 
 export class KickAdapter implements PlatformAdapter {
   readonly platform = "kick" as const;
@@ -146,7 +146,7 @@ export class KickAdapter implements PlatformAdapter {
           },
         };
 
-        await runCommand(message.slice(prefix.length), ctx, this.registry);
+        await runCommand(message.slice(prefix.length), ctx, this.registry, this.config.disabledCommands);
         await this.messageHandler?.(ctx, message);
       } else {
         await this.handleChatReward(id);
@@ -191,7 +191,7 @@ export class KickAdapter implements PlatformAdapter {
           response =
             reply.responses[
               Math.floor(Math.random() * reply.responses.length)
-            ] ?? "";
+              ] ?? "";
         } else {
           const key = reply.keywords.join(",");
           const idx = this.sequenceIndex.get(key) ?? 0;
