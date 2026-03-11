@@ -185,6 +185,6 @@ export interface Configuration {
   customMessages: CustomMessages;
   customReplies: CustomReplies[];
   soundRewards: SoundReward[];
-  soundboard: { name: string; url: string }[];
+  soundboard: SoundEntry[];
   chatRewards: Record<Platform, ChatReward>;
 }
