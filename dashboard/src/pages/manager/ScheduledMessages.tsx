@@ -339,7 +339,7 @@ export function ScheduledMessagesPage() {
                   }))
                 }
                 helperText="Minimum 30 seconds"
-                inputProps={{ min: 30 }}
+                slotProps={{ htmlInput: { min: 30 } }}
               />
               <FormControl fullWidth>
                 <InputLabel>Mode</InputLabel>
