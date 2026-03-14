@@ -108,6 +108,10 @@ if (DISCORD.ENABLED) {
   await adapter.start();
 }
 
-startServer(registry, config.language);
+try {
+  startServer(registry, config.language);
+} catch {
+  startServer(registry, config.language, 0);
+}
 
 logger.info("[Manao] Bot started successfully");
