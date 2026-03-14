@@ -21,7 +21,7 @@ profile:
 exclude:
   - name: BuildFiles
     paths:
-      - dist/
+      - public/
 
 #Execute shell command before Qodana execution (Applied in CI/CD pipeline)
 #bootstrap: sh ./prepare-qodana.sh
