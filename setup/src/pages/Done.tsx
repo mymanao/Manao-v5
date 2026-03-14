@@ -2,9 +2,7 @@ import {
   Paper,
   Typography,
   Button,
-  Alert,
   Stack,
-  Box,
   Chip,
 } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -38,7 +36,7 @@ export default function DonePage({ config }: { config: SetupConfig }) {
       </Typography>
       <Typography color="text.secondary" sx={{ mb: 3 }}>
         {anyEnabled
-          ? "Your bot is ready. Start it with the command below."
+          ? "Your bot is ready. Start it by clicking at \"ManaoBot\" shortcut on your desktop! Feel free to close this page and program."
           : "Go back and enable at least one platform to use the bot."}
       </Typography>
 
@@ -55,29 +53,6 @@ export default function DonePage({ config }: { config: SetupConfig }) {
           ))}
       </Stack>
 
-      {anyEnabled && (
-        <Box
-          sx={{
-            bgcolor: "grey.900",
-            borderRadius: 2,
-            p: 2,
-            mb: 3,
-            fontFamily: "monospace",
-            fontSize: 14,
-            textAlign: "left",
-          }}
-        >
-          <Typography fontFamily="monospace" color="primary.light">
-            bun start
-          </Typography>
-        </Box>
-      )}
-
-      <Alert severity="info" sx={{ mb: 3, textAlign: "left" }}>
-        The dashboard will be available at{" "}
-        <strong>http://localhost:3000</strong> after starting the bot.
-      </Alert>
-
       <Stack direction="row" spacing={2}>
         <Button
           variant="outlined"
@@ -86,15 +61,6 @@ export default function DonePage({ config }: { config: SetupConfig }) {
         >
           Back to Welcome
         </Button>
-        {anyEnabled && (
-          <Button
-            variant="contained"
-            fullWidth
-            onClick={() => (window.location.href = "http://localhost:3000")}
-          >
-            Open Dashboard
-          </Button>
-        )}
       </Stack>
     </Paper>
   );
