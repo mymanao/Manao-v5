@@ -6,7 +6,7 @@ import type {
   Configuration,
   CommandContext,
   MessageHandler,
-  PlatformAdapter,
+  PlatformAdapter, MessageData,
 } from "@/core/types";
 import type { CommandRegistry } from "@/core/registry";
 import { KickIt } from "@manaobot/kickit";
@@ -154,7 +154,7 @@ export class KickAdapter implements PlatformAdapter {
         );
         await this.messageHandler?.(ctx, message);
       } else {
-        await this.handleChatReward(id);
+        await this.handleChatReward(event);
         await this.handleCustomReplies(message);
       }
     } catch (err) {
@@ -162,20 +162,47 @@ export class KickAdapter implements PlatformAdapter {
     }
   }
 
-  private async handleChatReward(id: string): Promise<void> {
+  private async handleChatReward(event: ChatMessageEvent): Promise<void> {
     const reward = this.config.chatRewards.kick;
     const now = Date.now();
-    const last = this.cooldowns.get(id) ?? 0;
+    const last = this.cooldowns.get(event.sender.user_id.toString()) ?? 0;
 
     if (now - last > reward.cooldown * 1000) {
       if (Math.random() < reward.chance / 100) {
         const amount =
           Math.floor(Math.random() * (reward.maximum - reward.minimum + 1)) +
           reward.minimum;
-        addBalance(id, amount);
+        addBalance(event.sender.user_id.toString(), amount);
       }
-      this.cooldowns.set(id, now);
+      this.cooldowns.set(event.sender.user_id.toString(), now);
     }
+
+    const messageData: MessageData = {
+      from: "kick",
+      user: event.sender.username,
+      message: event.content,
+      id: event.message_id,
+      roles: {
+        isFollower: false,
+        isSubscriber:
+          event.sender.identity?.badges?.some(
+            (b: any) => b.type === "subscriber",
+          ) ?? false,
+        isVIP:
+          event.sender.identity?.badges?.some((b: any) => b.type === "vip") ??
+          false,
+        isModerator:
+          event.sender.identity?.badges?.some(
+            (b: any) => b.type === "moderator",
+          ) ?? false,
+        isBroadcaster:
+          event.sender.user_id === event.broadcaster.user_id,
+      },
+      color: event.sender.identity.username_color,
+      badges: []
+    };
+
+    io.emit("message", messageData);
   }
 
   private async handleCustomReplies(message: string): Promise<void> {
