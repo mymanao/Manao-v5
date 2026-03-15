@@ -19,8 +19,8 @@ import {
   InputAdornment,
 } from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
-import { api } from "@/hooks/useApi";
-import type { Configuration } from "@/types/api";
+import { api } from "@/hooks/useApi.ts";
+import type { Configuration } from "@/types/api.ts";
 
 const PLATFORMS = ["twitch", "kick", "discord"] as const;
 

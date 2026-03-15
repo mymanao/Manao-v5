@@ -4,7 +4,7 @@ import { theme } from "./theme";
 import { Layout } from "./components/Layout";
 import { HomePage } from "./pages/Home";
 import { CommandsPage } from "./pages/manager/Commands";
-import { ConfigPage } from "./pages/manager/Config";
+import { ConfigPage } from "./pages/customize/Config.tsx";
 import { RepliesPage } from "./pages/manager/Replies";
 import { ChannelPointsPage } from "./pages/manager/ChannelPoints";
 import { QueuePage } from "./pages/Queue";

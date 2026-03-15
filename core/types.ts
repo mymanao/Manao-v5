@@ -199,8 +199,57 @@ export interface MusicOverlaySettings {
   position: OverlayPosition;
 }
 
+export type ChatAlign = "left" | "center" | "right";
+export type ChatThemeId = "manao-v5" | "manao-classic" | "lucian" | "custom";
+export type ChatLayout = "default" | "classic" | "lucian";
+export type ChatAnimationIn =
+  | "slideInRight" | "slideInLeft" | "slideInUp" | "slideInDown"
+  | "fadeIn" | "fadeInUp" | "fadeInDown"
+  | "bounceInRight" | "bounceInLeft";
+export type ChatAnimationOut =
+  | "slideOutRight" | "slideOutLeft" | "slideOutUp" | "slideOutDown"
+  | "fadeOut" | "fadeOutUp" | "fadeOutDown"
+  | "bounceOutRight" | "bounceOutLeft";
+
+export interface ChatOverlaySettings {
+  themeId: ChatThemeId;
+  layout: ChatLayout;
+
+  // Layout
+  align: ChatAlign;
+  maxWidth: number;
+  maxMessages: number;
+  padding: number;
+  borderRadius: number;
+  borderWidth: number;
+
+  // Colors & appearance
+  backgroundOpacity: number;
+  bgColor: string;
+  textColor: string;
+  fontSize: number;
+  fontWeight: string;
+  fontFamily: string;
+  letterSpacing: number;
+  boxShadow: boolean;
+  textShadow: boolean;
+  hideBadges: boolean;
+  borderColorSource: "user" | "platform";
+
+  // Behavior
+  timeoutMs: number;
+
+  // Animation
+  animationIn: ChatAnimationIn;
+  animationOut: ChatAnimationOut;
+
+  // Custom CSS
+  customCSS: string;
+}
+
 export interface OverlaySettings {
   music: MusicOverlaySettings;
+  chat: ChatOverlaySettings;
 }
 
 export interface Configuration {
