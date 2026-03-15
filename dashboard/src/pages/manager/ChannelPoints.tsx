@@ -93,7 +93,7 @@ export function ChannelPointsPage() {
   const handleSave = async () => {
     try {
       setSaving(true);
-      const id = editId ?? crypto.randomUUID();
+      const id = editId ?? (crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`);
       const next = editId
         ? rewards.map((r) => (r.id === editId ? { ...form, id } : r))
         : [...rewards, { ...form, id }];
