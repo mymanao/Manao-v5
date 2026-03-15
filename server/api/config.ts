@@ -1,5 +1,6 @@
 import type { Elysia } from "elysia";
 import type { Configuration } from "@/core/types";
+import {DEFAULT_OVERLAY_SETTINGS} from "@/helpers/overlayTheme.ts";
 
 const CONFIG_PATH = `${process.cwd()}/userConfig.json`;
 
@@ -50,6 +51,7 @@ function getDefaultConfig(): Configuration {
       discord: { minimum: 1, maximum: 4, chance: 75, cooldown: 60 },
     },
     scheduledMessages: [],
+    overlaySettings: DEFAULT_OVERLAY_SETTINGS
   };
 }
 

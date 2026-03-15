@@ -185,6 +185,24 @@ export interface ScheduledMessage {
   isEnabled: boolean;
 }
 
+export type OverlayThemeId = "manao-v5" | "manao-classic" | "custom";
+export type OverlayPosition = "bottom-left" | "bottom-right" | "top-left" | "top-right";
+export type OverlayLayout = "default" | "classic";
+
+export interface MusicOverlaySettings {
+  themeId: OverlayThemeId;
+  layout: OverlayLayout;
+  accentColor: string;
+  bgColor: string;
+  fontFamily: string;
+  borderRadius: number;
+  position: OverlayPosition;
+}
+
+export interface OverlaySettings {
+  music: MusicOverlaySettings;
+}
+
 export interface Configuration {
   prefix: Record<Platform, string>;
   defaultSongs: SongData[];
@@ -197,4 +215,5 @@ export interface Configuration {
   soundboard: SoundEntry[];
   chatRewards: Record<Platform, ChatReward>;
   scheduledMessages: ScheduledMessage[];
+  overlaySettings: OverlaySettings
 }

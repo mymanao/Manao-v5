@@ -23,6 +23,7 @@ import QueueMusicIcon from "@mui/icons-material/QueueMusic";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import RedeemIcon from "@mui/icons-material/Redeem";
 import ScheduleIcon from "@mui/icons-material/Schedule";
+import PaletteIcon from '@mui/icons-material/Palette';
 import ForumIcon from "@mui/icons-material/Forum";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -46,17 +47,19 @@ const NAV_ITEMS: NavItem[] = [
   {
     label: "Commands",
     icon: <TerminalIcon />,
-    path: "/commands",
+    path: "/manager/commands",
     section: "Manager",
   },
-  { label: "Config", icon: <SettingsIcon />, path: "/config" },
-  { label: "Custom Replies", icon: <ForumIcon />, path: "/replies" },
-  { label: "Channel Points", icon: <RedeemIcon />, path: "/channel-points" },
+  { label: "Custom Replies", icon: <ForumIcon />, path: "/manager/replies" },
+  { label: "Channel Points", icon: <RedeemIcon />, path: "/manager/channel-points" },
+  { label: "Scheduled Messages", icon: <ScheduleIcon />, path: "/manager/scheduled-messages", },
   {
-    label: "Scheduled Messages",
-    icon: <ScheduleIcon />,
-    path: "/scheduled-messages",
+    label: "Config",
+    icon: <SettingsIcon />,
+    path: "/customize/config",
+    section: "Customize",
   },
+  { label: "Overlay", icon: <PaletteIcon />, path: "/customize/overlay", },
   {
     label: "Chat Overlay",
     icon: <ChatIcon />,
