@@ -216,3 +216,8 @@ Do not open a public issue. Join the [Discord server](https://discord.gg/vkW7YMy
 ## 📜 License
 
 Licensed under the [GNU General Public License v3.0](/LICENSE). See the [GNU Official Website](https://www.gnu.org/licenses/gpl-3.0.en.html) for full details.
+
+Manao is not affiliated with Twitch Interactive, Inc., Kick Interactive, Inc., or Discord Inc. in any way. All trademarks are property of their respective owners.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+[**Lucian's Chat Overlay**](https://github.com/sir-lucian/tw-custom-chat-overlay) by Karn Lucian Kamolnavin, used under the MIT License
