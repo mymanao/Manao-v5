@@ -13,6 +13,7 @@ import WelcomePage from "./pages/Welcome";
 import TwitchPage from "./pages/Twitch";
 import DiscordPage from "./pages/Discord";
 import KickPage from "./pages/Kick";
+import YouTubePage from "./pages/YouTube";
 import DonePage from "./pages/Done";
 import { theme } from "../../dashboard/src/theme";
 
@@ -36,9 +37,15 @@ export interface SetupConfig {
     ngrokAuthtoken: string;
     ngrokDomain: string;
   };
+  youtube: {
+    enabled: boolean;
+    clientId: string;
+    clientSecret: string;
+    hasTokens: boolean;
+  };
 }
 
-const STEPS = ["Welcome", "Twitch", "Discord", "Kick", "Done"];
+const STEPS = ["Welcome", "Twitch", "Discord", "Kick", "YouTube", "Done"];
 
 export default function App() {
   const [step, setStep] = useState(0);
@@ -46,11 +53,11 @@ export default function App() {
 
   useEffect(() => {
     fetch("/setup/api/config")
-      .then((r) => r.json())
-      .then((c: SetupConfig) => setConfig(c));
+    .then((r) => r.json())
+    .then((c: SetupConfig) => setConfig(c));
   }, []);
 
-  const next = () => setStep((s) => Math.min(s + 1, 4));
+  const next = () => setStep((s) => Math.min(s + 1, 5));
   const back = () => setStep((s) => Math.max(s - 1, 0));
   const reload = async () => {
     const c = await fetch("/setup/api/config").then((r) => r.json());
@@ -140,7 +147,15 @@ export default function App() {
               onReload={reload}
             />
           )}
-          {step === 4 && <DonePage config={config} />}
+          {step === 4 && (
+            <YouTubePage
+              config={config}
+              onNext={next}
+              onBack={back}
+              onReload={reload}
+            />
+          )}
+          {step === 5 && <DonePage config={config} />}
         </Box>
       </Box>
     </ThemeProvider>

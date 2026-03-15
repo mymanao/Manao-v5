@@ -92,7 +92,7 @@ export const CHAT_OVERLAY_PRESETS: Record<
     borderColorSource: "user",
     timeoutMs: 0,
     animationIn: "slideInRight",
-    animationOut: "slideOutLeft",
+    animationOut: "slideOutRight",
     customCSS: "",
   },
   "manao-classic": {
@@ -167,4 +167,5 @@ export const PLATFORM_COLOR: Record<string, string> = {
   twitch: "#9146FF",
   kick: "#53FC18",
   discord: "#5865F2",
+  youtube: "#FF0000",
 };

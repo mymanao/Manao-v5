@@ -5,9 +5,26 @@ import {DEFAULT_OVERLAY_SETTINGS} from "@/helpers/overlayTheme.ts";
 const CONFIG_PATH = `${process.cwd()}/userConfig.json`;
 
 export async function getUserConfig(): Promise<Configuration> {
+  const defaults = getDefaultConfig();
   const file = Bun.file(CONFIG_PATH);
-  if (!(await file.exists())) return getDefaultConfig();
-  return file.json();
+  if (!(await file.exists())) return defaults;
+
+  const saved = await file.json() as Partial<Configuration>;
+
+  // Deep merge — saved values win, but missing keys fall back to defaults.
+  // This ensures new platforms/fields added in future versions always have
+  // a safe fallback without requiring manual userConfig.json edits.
+  return {
+    ...defaults,
+    ...saved,
+    prefix: { ...defaults.prefix, ...saved.prefix },
+    chatRewards: { ...defaults.chatRewards, ...saved.chatRewards },
+    customMessages: { ...defaults.customMessages, ...saved.customMessages },
+    overlaySettings: {
+      music: { ...defaults.overlaySettings.music, ...saved.overlaySettings?.music },
+      chat: { ...defaults.overlaySettings.chat, ...saved.overlaySettings?.chat },
+    },
+  };
 }
 
 export async function updateUserConfig<K extends keyof Configuration>(
@@ -21,7 +38,7 @@ export async function updateUserConfig<K extends keyof Configuration>(
 
 function getDefaultConfig(): Configuration {
   return {
-    prefix: { twitch: "!", kick: "!", discord: "!" },
+    prefix: { twitch: "!", kick: "!", discord: "!", youtube: "!" },
     defaultSongs: [],
     disabledCommands: [],
     language: "en",
@@ -49,6 +66,7 @@ function getDefaultConfig(): Configuration {
       twitch: { minimum: 1, maximum: 4, chance: 75, cooldown: 60 },
       kick: { minimum: 1, maximum: 4, chance: 75, cooldown: 60 },
       discord: { minimum: 1, maximum: 4, chance: 75, cooldown: 60 },
+      youtube: { minimum: 1, maximum: 4, chance: 75, cooldown: 60 },
     },
     scheduledMessages: [],
     overlaySettings: DEFAULT_OVERLAY_SETTINGS

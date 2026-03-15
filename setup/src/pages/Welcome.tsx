@@ -14,6 +14,7 @@ export default function WelcomePage({
     { name: "Twitch", ok: config.twitch.enabled && config.twitch.hasTokens },
     { name: "Discord", ok: config.discord.enabled && config.discord.hasToken },
     { name: "Kick", ok: config.kick.enabled && config.kick.hasTokens },
+    { name: "YouTube", ok: config.youtube.enabled && config.youtube.hasTokens },
   ];
 
   return (

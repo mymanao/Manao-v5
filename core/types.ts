@@ -243,7 +243,6 @@ export interface ChatOverlaySettings {
   borderColorSource: "user" | "platform";
 
   // Behavior
-  cooldownMs: number;
   timeoutMs: number;
 
   // Animation

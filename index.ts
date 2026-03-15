@@ -1,4 +1,4 @@
-import { TWITCH, DISCORD, KICK } from "@/config";
+import { TWITCH, DISCORD, KICK, YOUTUBE } from "@/config";
 import { logger } from "@/helpers/logger";
 import { CommandRegistry } from "@/core/registry";
 import { buildCustomCommand } from "@/core/custom-commands";
@@ -111,6 +111,12 @@ if (KICK.ENABLED) {
 if (DISCORD.ENABLED) {
   const { DiscordAdapter } = await import("@/platforms/discord/adapter");
   const adapter = new DiscordAdapter(registry, config);
+  await adapter.start();
+}
+
+if (YOUTUBE.ENABLED) {
+  const { YoutubeAdapter } = await import("@/platforms/youtube/adapter");
+  const adapter = new YoutubeAdapter(registry, config);
   await adapter.start();
 }
 

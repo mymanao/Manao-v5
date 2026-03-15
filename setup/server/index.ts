@@ -48,9 +48,9 @@ function writeEnv(values: Record<string, string>): void {
     // Append keys not in template
     const templateKeys = new Set(
       template
-        .split("\n")
-        .filter((l) => l.includes("=") && !l.startsWith("#"))
-        .map((l) => (l.split("=")[0] ?? "").trim()),
+      .split("\n")
+      .filter((l) => l.includes("=") && !l.startsWith("#"))
+      .map((l) => (l.split("=")[0] ?? "").trim()),
     );
     for (const [k, v] of Object.entries(merged)) {
       if (!templateKeys.has(k)) lines.push(`${k}=${v}`);
@@ -58,8 +58,8 @@ function writeEnv(values: Record<string, string>): void {
     writeFileSync(ENV_PATH, lines.join("\n"));
   } else {
     const content = Object.entries(merged)
-      .map(([k, v]) => `${k}=${v}`)
-      .join("\n");
+    .map(([k, v]) => `${k}=${v}`)
+    .join("\n");
     writeFileSync(ENV_PATH, content);
   }
 }
@@ -78,7 +78,8 @@ function isSetupComplete(): boolean {
     !!env.TWITCH_BOT_ACCESS_TOKEN;
   const discordOk = env.USE_DISCORD === "true" && !!env.DISCORD_BOT_TOKEN;
   const kickOk = env.USE_KICK === "true" && !!env.KICK_ACCESS_TOKEN;
-  return twitchOk || discordOk || kickOk;
+  const youtubeOk = env.USE_YOUTUBE === "true" && !!env.YOUTUBE_ACCESS_TOKEN;
+  return twitchOk || discordOk || kickOk || youtubeOk;
 }
 
 export function createSetupServer() {
@@ -246,6 +247,12 @@ export function createSetupServer() {
         ngrokAuthtoken: env.NGROK_AUTHTOKEN ?? "",
         ngrokDomain: env.NGROK_DOMAIN ?? "",
       },
+      youtube: {
+        enabled: env.USE_YOUTUBE === "true",
+        clientId: env.YOUTUBE_CLIENT_ID ?? "",
+        clientSecret: env.YOUTUBE_CLIENT_SECRET ?? "",
+        hasTokens: !!env.YOUTUBE_ACCESS_TOKEN,
+      },
     };
   });
 
@@ -323,6 +330,124 @@ export function createSetupServer() {
     } catch (err) {
       return { success: false, error: String(err) };
     }
+  });
+
+
+  // YouTube OAuth — Desktop app flow
+  // Spins up a one-shot local HTTP server on a random port to receive the
+  // Google callback. User does NOT need to register a redirect URI.
+  app.post("/setup/api/youtube/authorize", async ({ body }) => {
+    const b = body as Record<string, string>;
+    if (!b.clientId || !b.clientSecret) {
+      return { success: false, error: "Missing clientId or clientSecret" };
+    }
+
+    const state = crypto.randomUUID();
+    const SCOPES = [
+      "https://www.googleapis.com/auth/youtube.readonly",
+      "https://www.googleapis.com/auth/youtube.force-ssl",
+    ].join(" ");
+
+    type CallbackResult = { code: string; redirectUri: string } | { error: string };
+
+    const result = await new Promise<CallbackResult>((resolve) => {
+      let redirectUri = "";
+
+      const server = Bun.serve({
+        port: 0,
+        fetch(req) {
+          const url = new URL(req.url);
+          const code = url.searchParams.get("code");
+          const err = url.searchParams.get("error");
+          const returnedState = url.searchParams.get("state");
+
+          const html = (title: string, body: string) =>
+            new Response(
+              `<!DOCTYPE html><html lang="en"><body style="font-family:sans-serif;padding:2rem;text-align:center">
+              <h2>${title}</h2><p>${body}</p><script>window.close()</script></body></html>`,
+              { headers: { "Content-Type": "text/html" } },
+            );
+
+          if (returnedState !== state) {
+            resolve({ error: "State mismatch" });
+            setTimeout(() => server.stop(), 100);
+            return html("❌ Failed", "State mismatch");
+          }
+          if (err || !code) {
+            resolve({ error: err ?? "missing code" });
+            setTimeout(() => server.stop(), 100);
+            return html("❌ Failed", err ?? "missing code");
+          }
+
+          resolve({ code, redirectUri });
+          setTimeout(() => server.stop(), 100);
+          return html("✅ YouTube account authorized!", "You can close this window.");
+        },
+      });
+
+      redirectUri = `http://localhost:${server.port}`;
+
+      const authUrl = new URL("https://accounts.google.com/o/oauth2/v2/auth");
+      authUrl.searchParams.set("client_id", b.clientId!);
+      authUrl.searchParams.set("redirect_uri", redirectUri);
+      authUrl.searchParams.set("response_type", "code");
+      authUrl.searchParams.set("scope", SCOPES);
+      authUrl.searchParams.set("state", state);
+      authUrl.searchParams.set("access_type", "offline");
+      authUrl.searchParams.set("prompt", "consent");
+
+      // Open browser on the server side
+      import("open").then(({ default: open }) => open(authUrl.toString()));
+    });
+
+    if ("error" in result) {
+      return { success: false, error: result.error };
+    }
+
+    try {
+      const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          code: result.code,
+          client_id: b.clientId,
+          client_secret: b.clientSecret,
+          redirect_uri: result.redirectUri,
+          grant_type: "authorization_code",
+        }),
+      });
+      const tokens = (await tokenRes.json()) as {
+        access_token: string;
+        refresh_token: string;
+      };
+      if (!tokens.access_token) throw new Error("No access_token in response");
+
+      writeEnv({
+        YOUTUBE_CLIENT_ID: b.clientId,
+        YOUTUBE_CLIENT_SECRET: b.clientSecret,
+        YOUTUBE_ACCESS_TOKEN: tokens.access_token,
+        YOUTUBE_REFRESH_TOKEN: tokens.refresh_token ?? "",
+        USE_YOUTUBE: "true",
+      });
+
+      return { success: true };
+    } catch (err) {
+      return { success: false, error: String(err) };
+    }
+  });
+
+
+  // Save YouTube config
+  app.post("/setup/api/youtube", ({ body }) => {
+    const b = body as Record<string, string>;
+    const values: Record<string, string> = {
+      USE_YOUTUBE: b.enabled === "true" ? "true" : "false",
+    };
+    if (b.clientId) values.YOUTUBE_CLIENT_ID = b.clientId;
+    if (b.clientSecret && !b.clientSecret.includes("•"))
+      values.YOUTUBE_CLIENT_SECRET = b.clientSecret;
+    writeEnv(values);
+    return { success: true };
   });
 
   // Save Kick config

@@ -27,6 +27,14 @@ const kickSchema = z.object({
   KICK_EXPIRES_AT: z.string().min(1),
 });
 
+const youtubeSchema = z.object({
+  USE_YOUTUBE: z.coerce.boolean().default(false),
+  YOUTUBE_CLIENT_ID: z.string().min(1),
+  YOUTUBE_CLIENT_SECRET: z.string().min(1),
+  YOUTUBE_ACCESS_TOKEN: z.string().default(""),
+  YOUTUBE_REFRESH_TOKEN: z.string().default(""),
+});
+
 const baseSchema = z.object({
   NODE_ENV: z.enum(["development", "production"]).default("development"),
   PORT: z.coerce.number().default(4600),
@@ -38,6 +46,7 @@ const base = baseSchema.parse(Bun.env);
 const useTwitch = Bun.env.USE_TWITCH === "true";
 const useDiscord = Bun.env.USE_DISCORD === "true";
 const useKick = Bun.env.USE_KICK === "true";
+const useYoutube = Bun.env.USE_YOUTUBE === "true";
 
 const twitch = useTwitch
   ? twitchSchema.parse(Bun.env)
@@ -48,6 +57,9 @@ const discord = useDiscord
 const kick = useKick
   ? kickSchema.parse(Bun.env)
   : kickSchema.partial().parse(Bun.env);
+const youtube = useYoutube
+  ? youtubeSchema.parse(Bun.env)
+  : youtubeSchema.partial().parse(Bun.env);
 
 export const IS_PRODUCTION = base.NODE_ENV === "production";
 export const PORT = base.PORT;
@@ -103,4 +115,16 @@ export const KICK = {
   EXPIRES_AT: kick.KICK_EXPIRES_AT ?? "",
   NGROK_AUTHTOKEN: base.NGROK_AUTHTOKEN,
   NGROK_DOMAIN: base.NGROK_DOMAIN,
+};
+
+export const YOUTUBE = {
+  ENABLED: useYoutube,
+  CLIENT_ID: youtube.YOUTUBE_CLIENT_ID ?? "",
+  CLIENT_SECRET: youtube.YOUTUBE_CLIENT_SECRET ?? "",
+  ACCESS_TOKEN: youtube.YOUTUBE_ACCESS_TOKEN ?? "",
+  REFRESH_TOKEN: youtube.YOUTUBE_REFRESH_TOKEN ?? "",
+  SCOPES: [
+    "https://www.googleapis.com/auth/youtube.readonly",
+    "https://www.googleapis.com/auth/youtube.force-ssl",
+  ],
 };

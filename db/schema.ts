@@ -6,8 +6,8 @@ export const users = sqliteTable("users", {
   money: integer("money").notNull().default(0),
   nickname: text("nickname"),
   createdAt: integer("created_at")
-    .notNull()
-    .default(sql`(strftime('%s', 'now'))`),
+  .notNull()
+  .default(sql`(strftime('%s', 'now'))`),
 });
 
 export const linkedAccounts = sqliteTable("linked_accounts", {
@@ -15,9 +15,10 @@ export const linkedAccounts = sqliteTable("linked_accounts", {
   twitchId: text("twitch_id").unique(),
   kickId: text("kick_id").unique(),
   discordId: text("discord_id").unique(),
+  youtubeId: text("youtube_id").unique(),
   linkedAt: integer("linked_at")
-    .notNull()
-    .default(sql`(strftime('%s', 'now'))`),
+  .notNull()
+  .default(sql`(strftime('%s', 'now'))`),
 });
 
 export const customCommands = sqliteTable("custom_commands", {
@@ -36,14 +37,14 @@ export const customCommands = sqliteTable("custom_commands", {
       "broadcaster",
     ],
   })
-    .notNull()
-    .default("everyone"),
+  .notNull()
+  .default("everyone"),
   code: text("code").notNull(),
   isEnabled: integer("is_enabled", { mode: "boolean" }).notNull().default(true),
   createdAt: integer("created_at")
-    .notNull()
-    .default(sql`(strftime('%s', 'now'))`),
+  .notNull()
+  .default(sql`(strftime('%s', 'now'))`),
   updatedAt: integer("updated_at")
-    .notNull()
-    .default(sql`(strftime('%s', 'now'))`),
+  .notNull()
+  .default(sql`(strftime('%s', 'now'))`),
 });

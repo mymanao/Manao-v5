@@ -19,6 +19,11 @@ export default function DonePage({ config }: { config: SetupConfig }) {
       ok: config.kick.enabled && config.kick.hasTokens,
       color: "#53fc18",
     },
+    {
+      name: "YouTube",
+      ok: config.youtube.enabled && config.youtube.hasTokens,
+      color: "#ff0000",
+    }
   ];
   const anyEnabled = platforms.some((p) => p.ok);
 
