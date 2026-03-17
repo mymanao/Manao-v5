@@ -2,35 +2,35 @@ import { z } from "zod";
 
 const twitchSchema = z.object({
   USE_TWITCH: z.coerce.boolean().default(false),
-  TWITCH_CLIENT_ID: z.string().min(1),
-  TWITCH_CLIENT_SECRET: z.string().min(1),
-  TWITCH_BOT_ID: z.string().min(1),
+  TWITCH_CLIENT_ID: z.string().default(""),
+  TWITCH_CLIENT_SECRET: z.string().default(""),
+  TWITCH_BOT_ID: z.string().default(""),
   TWITCH_BOT_ACCESS_TOKEN: z.string().default(""),
   TWITCH_BOT_REFRESH_TOKEN: z.string().default(""),
-  BROADCASTER_ID: z.string().min(1),
-  BROADCASTER_CHANNEL: z.string().min(1),
+  BROADCASTER_ID: z.string().default(""),
+  BROADCASTER_CHANNEL: z.string().default(""),
   BROADCASTER_ACCESS_TOKEN: z.string().default(""),
   BROADCASTER_REFRESH_TOKEN: z.string().default(""),
 });
 
 const discordSchema = z.object({
   USE_DISCORD: z.coerce.boolean().default(false),
-  DISCORD_BOT_TOKEN: z.string().min(1),
+  DISCORD_BOT_TOKEN: z.string().default(""),
 });
 
 const kickSchema = z.object({
   USE_KICK: z.coerce.boolean().default(false),
-  KICK_CLIENT_ID: z.string().min(1),
-  KICK_CLIENT_SECRET: z.string().min(1),
-  KICK_ACCESS_TOKEN: z.string().min(1),
-  KICK_REFRESH_TOKEN: z.string().min(1),
-  KICK_EXPIRES_AT: z.string().min(1),
+  KICK_CLIENT_ID: z.string().default(""),
+  KICK_CLIENT_SECRET: z.string().default(""),
+  KICK_ACCESS_TOKEN: z.string().default(""),
+  KICK_REFRESH_TOKEN: z.string().default(""),
+  KICK_EXPIRES_AT: z.string().default(""),
 });
 
 const youtubeSchema = z.object({
   USE_YOUTUBE: z.coerce.boolean().default(false),
-  YOUTUBE_CLIENT_ID: z.string().min(1),
-  YOUTUBE_CLIENT_SECRET: z.string().min(1),
+  YOUTUBE_CLIENT_ID: z.string().default(""),
+  YOUTUBE_CLIENT_SECRET: z.string().default(""),
   YOUTUBE_ACCESS_TOKEN: z.string().default(""),
   YOUTUBE_REFRESH_TOKEN: z.string().default(""),
 });
