@@ -58,9 +58,20 @@ function buildAuthProvider(): RefreshingAuthProvider {
 
   authProvider.onRefresh(async (userId, newToken) => {
     const userType: UserType = userId === TWITCH.BOT.ID ? "bot" : "broadcaster";
-    const target = userType === "bot" ? TWITCH.BOT : TWITCH.BROADCASTER;
-    target.ACCESS_TOKEN = newToken.accessToken;
-    target.REFRESH_TOKEN = newToken.refreshToken ?? "";
+    switch (userType) {
+      case "bot":
+        TWITCH.BOT.ACCESS_TOKEN = newToken.accessToken;
+        TWITCH.BOT.REFRESH_TOKEN = newToken.refreshToken ?? "";
+        Bun.env.TWITCH_BOT_ACCESS_TOKEN = newToken.accessToken;
+        Bun.env.TWITCH_BOT_REFRESH_TOKEN = newToken.refreshToken ?? "";
+        break;
+      case "broadcaster":
+        TWITCH.BROADCASTER.ACCESS_TOKEN = newToken.accessToken;
+        TWITCH.BROADCASTER.REFRESH_TOKEN = newToken.refreshToken ?? "";
+        Bun.env.BROADCASTER_ACCESS_TOKEN = newToken.accessToken;
+        Bun.env.BROADCASTER_REFRESH_TOKEN = newToken.refreshToken ?? "";
+        break;
+    }
     await persistTokenToEnv(userType, newToken);
     logger.info(`[Twitch] Refreshed ${userType} token`);
   });
