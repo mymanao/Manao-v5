@@ -1,6 +1,7 @@
 import type { Elysia } from "elysia";
 import type { Configuration } from "@/core/types";
 import { DEFAULT_OVERLAY_SETTINGS } from "@/helpers/overlayTheme.ts";
+import {updateConfig} from "@/index.ts";
 
 const CONFIG_PATH = `${process.cwd()}/userConfig.json`;
 
@@ -90,6 +91,7 @@ export function registerConfigAPI(app: Elysia) {
       const config = await getUserConfig();
       Object.assign(config, data);
       await Bun.write(CONFIG_PATH, JSON.stringify(config, null, 2));
+      await updateConfig(config);
       return { success: true };
     } catch (err) {
       return { success: false, error: String(err) };

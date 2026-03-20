@@ -4,7 +4,7 @@ import { CommandRegistry } from "@/core/registry";
 import { buildCustomCommand } from "@/core/custom-commands";
 import { getUserConfig } from "@/server/api/config";
 import { getCustomCommands } from "@/db";
-import { startServer } from "@/server";
+import {startServer} from "@/server";
 import { setRegistry } from "@/commands/info/help";
 import { startScheduledMessages, setSendFn } from "@/core/scheduled-messages";
 
@@ -46,8 +46,13 @@ import shoutout from "@/commands/moderation/shoutout";
 import game from "@/commands/moderation/game";
 import stream from "@/commands/moderation/stream";
 import event from "@/commands/moderation/event";
+import type {Configuration} from "@/core/types.ts";
+import type { TwitchAdapter } from "@/platforms/twitch/adapter";
+import type { KickAdapter } from "@/platforms/kick/adapter";
+import type {DiscordAdapter} from "@/platforms/discord/adapter.ts";
+import type {YoutubeAdapter} from "@/platforms/youtube/adapter.ts";
 
-const config = await getUserConfig();
+let config = await getUserConfig();
 
 const registry = new CommandRegistry();
 registry.registerAll([
@@ -94,30 +99,69 @@ logger.info(
 let twitchSend: ((msg: string) => Promise<void>) | null = null;
 let kickSend: ((msg: string) => Promise<void>) | null = null;
 
+let twAdapter: TwitchAdapter, kickAdapter: KickAdapter, discordAdapter: DiscordAdapter, ytAdapter: YoutubeAdapter;
+
 if (TWITCH.ENABLED) {
   const { TwitchAdapter } = await import("@/platforms/twitch/adapter");
-  const adapter = new TwitchAdapter(registry, config);
-  await adapter.start();
-  twitchSend = (msg) => adapter.sendMessage(TWITCH.BROADCASTER.CHANNEL, msg);
+  twAdapter = new TwitchAdapter(registry, config);
+  await twAdapter.start();
+  twitchSend = (msg) => twAdapter.sendMessage(TWITCH.BROADCASTER.CHANNEL, msg);
 }
 
 if (KICK.ENABLED) {
   const { KickAdapter } = await import("@/platforms/kick/adapter");
-  const adapter = new KickAdapter(registry, config);
-  await adapter.start();
-  kickSend = (msg) => adapter.sendMessage("", msg);
+  kickAdapter = new KickAdapter(registry, config);
+  await kickAdapter.start();
+  kickSend = (msg) => kickAdapter.sendMessage("", msg);
 }
 
 if (DISCORD.ENABLED) {
   const { DiscordAdapter } = await import("@/platforms/discord/adapter");
-  const adapter = new DiscordAdapter(registry, config);
-  await adapter.start();
+  discordAdapter = new DiscordAdapter(registry, config);
+  await discordAdapter.start();
 }
 
 if (YOUTUBE.ENABLED) {
   const { YoutubeAdapter } = await import("@/platforms/youtube/adapter");
-  const adapter = new YoutubeAdapter(registry, config);
-  await adapter.start();
+  ytAdapter = new YoutubeAdapter(registry, config);
+  await ytAdapter.start();
+}
+
+export async function updateConfig(newConfig: Configuration) {
+  config = newConfig;
+  logger.info("[Manao] ====================> Updating configuration...");
+
+  if (TWITCH.ENABLED && twAdapter) {
+    const { TwitchAdapter } = await import("@/platforms/twitch/adapter");
+    await twAdapter.stop();
+    twAdapter = new TwitchAdapter(registry, config);
+    await twAdapter.start();
+    twitchSend = (msg) => twAdapter.sendMessage(TWITCH.BROADCASTER.CHANNEL, msg);
+  }
+
+  if (KICK.ENABLED && kickAdapter) {
+    const { KickAdapter } = await import("@/platforms/kick/adapter");
+    await kickAdapter.stop();
+    kickAdapter = new KickAdapter(registry, config);
+    await kickAdapter.start();
+    kickSend = (msg) => kickAdapter.sendMessage("", msg);
+  }
+
+  if (DISCORD.ENABLED && discordAdapter) {
+    const { DiscordAdapter } = await import("@/platforms/discord/adapter");
+    await discordAdapter.stop();
+    discordAdapter = new DiscordAdapter(registry, config);
+    await discordAdapter.start();
+  }
+
+  if (YOUTUBE.ENABLED && ytAdapter) {
+    const { YoutubeAdapter } = await import("@/platforms/youtube/adapter");
+    await ytAdapter.stop();
+    ytAdapter = new YoutubeAdapter(registry, config);
+    await ytAdapter.start();
+  }
+
+  logger.info("[Manao] Configuration updated <====================");
 }
 
 setSendFn(async (platform, message) => {

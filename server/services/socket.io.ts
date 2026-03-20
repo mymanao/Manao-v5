@@ -1,6 +1,6 @@
 import { logger } from "@/helpers/logger";
 import { Server, type Socket } from "socket.io";
-import type { SongRequestData } from "@/core/types.ts";
+import type {SongRequestData} from "@/core/types.ts";
 import type { AddressInfo } from "net";
 import { internalIpV4Sync } from "internal-ip";
 

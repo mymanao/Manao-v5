@@ -54,7 +54,7 @@ export class KickAdapter implements PlatformAdapter {
       ngrok: {
         authtoken: KICK.NGROK_AUTHTOKEN,
         domain: KICK.NGROK_DOMAIN,
-        port: 8080,
+        port: 0,
       },
     });
 
@@ -71,6 +71,7 @@ export class KickAdapter implements PlatformAdapter {
   }
 
   async stop(): Promise<void> {
+    this.bot = undefined as any;
     logger.info("[Kick] Adapter stopped");
   }
 
