@@ -54,37 +54,41 @@ import type { YoutubeAdapter } from "@/platforms/youtube/adapter.ts";
 
 let config = await getUserConfig();
 
-const registry = new CommandRegistry();
-registry.registerAll([
-  balance,
-  gamble,
-  autobet,
-  give,
-  set,
-  version,
-  help,
-  uptime,
-  love,
-  hate,
-  stomp,
-  eat,
-  nickname,
-  language,
-  currency,
-  link,
-  songPlaying,
-  songQueue,
-  songSkip,
-  songRemove,
-  songRequest,
-  songDefault,
-  announce,
-  shoutout,
-  game,
-  stream,
-  event,
-]);
+let registry = new CommandRegistry();
 
+function registerCommand() {
+  registry.registerAll([
+    balance,
+    gamble,
+    autobet,
+    give,
+    set,
+    version,
+    help,
+    uptime,
+    love,
+    hate,
+    stomp,
+    eat,
+    nickname,
+    language,
+    currency,
+    link,
+    songPlaying,
+    songQueue,
+    songSkip,
+    songRemove,
+    songRequest,
+    songDefault,
+    announce,
+    shoutout,
+    game,
+    stream,
+    event,
+  ]);
+}
+
+registerCommand();
 setRegistry(registry);
 
 const customCommands = getCustomCommands();
