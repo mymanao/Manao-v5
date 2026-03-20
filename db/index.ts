@@ -193,8 +193,8 @@ export function createCustomCommand(
 ) {
   const id = Bun.randomUUIDv7();
   db.insert(schema.customCommands)
-    .values({ ...command, id })
-    .run();
+  .values({ ...command, id })
+  .run();
   return id;
 }
 

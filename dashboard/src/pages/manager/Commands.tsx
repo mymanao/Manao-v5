@@ -130,6 +130,7 @@ export function CommandsPage() {
     setDialogOpen(true);
   };
   const openEdit = (c: CustomCommand) => {
+    c.aliases = JSON.parse(c.aliases).replace(/^\[?"|"?]$/g, "");
     setForm({
       id: c.id,
       name: c.name,
@@ -147,6 +148,7 @@ export function CommandsPage() {
       if (form.id) {
         await api.put(`/api/custom-commands/${form.id}`, form);
       } else {
+        form.aliases = JSON.stringify(form.aliases.split(","));
         await api.post("/api/custom-commands", form);
       }
       setDialogOpen(false);
