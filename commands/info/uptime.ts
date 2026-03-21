@@ -7,7 +7,7 @@ export default {
     en: "Get the current uptime of the stream",
     th: "ตรวจสอบระยะเวลาที่สตรีมเปิดอยู่",
   },
-  platforms: ["twitch"],
+  platforms: ["twitch", "kick"],
   execute: async (ctx) => {
     const t = i18n[ctx.language];
     // Stream uptime requires Twitch API — emitted to adapter layer to resolve
