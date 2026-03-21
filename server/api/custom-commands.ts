@@ -9,7 +9,7 @@ import {
 } from "@/db";
 import type { CommandRegistry } from "@/core/registry";
 import { buildCustomCommand } from "@/core/custom-commands";
-import {logger} from "@/helpers/logger.ts";
+import { logger } from "@/helpers/logger.ts";
 
 const permissionSchema = z.enum([
   "everyone",

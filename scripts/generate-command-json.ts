@@ -71,9 +71,7 @@ function extractPlatforms(src: string): string[] {
   return [...m[1].matchAll(/["'\`]([^"'\`]+)["'\`]/g)].map((x) => x[1]);
 }
 
-function extractArguments(
-  src: string,
-): {
+function extractArguments(src: string): {
   name: { en: string; th: string };
   description: { en: string; th: string };
   required?: boolean;

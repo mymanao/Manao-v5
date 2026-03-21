@@ -87,9 +87,7 @@
       "indexes": {
         "custom_commands_name_unique": {
           "name": "custom_commands_name_unique",
-          "columns": [
-            "name"
-          ],
+          "columns": ["name"],
           "isUnique": true
         }
       },
@@ -148,30 +146,22 @@
       "indexes": {
         "linked_accounts_twitch_id_unique": {
           "name": "linked_accounts_twitch_id_unique",
-          "columns": [
-            "twitch_id"
-          ],
+          "columns": ["twitch_id"],
           "isUnique": true
         },
         "linked_accounts_kick_id_unique": {
           "name": "linked_accounts_kick_id_unique",
-          "columns": [
-            "kick_id"
-          ],
+          "columns": ["kick_id"],
           "isUnique": true
         },
         "linked_accounts_discord_id_unique": {
           "name": "linked_accounts_discord_id_unique",
-          "columns": [
-            "discord_id"
-          ],
+          "columns": ["discord_id"],
           "isUnique": true
         },
         "linked_accounts_youtube_id_unique": {
           "name": "linked_accounts_youtube_id_unique",
-          "columns": [
-            "youtube_id"
-          ],
+          "columns": ["youtube_id"],
           "isUnique": true
         }
       },
