@@ -38,3 +38,4 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 # User config files
 userConfig.json
 /.env
+.aider*
