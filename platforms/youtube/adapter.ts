@@ -65,7 +65,7 @@ export class YoutubeAdapter implements PlatformAdapter {
     this.liveChatId = await this.fetchActiveLiveChatId();
     if (!this.liveChatId) {
       logger.warn(
-        "[YouTube] No active live broadcast found — will retry in 60s",
+        "[YouTube] Live chat not found, retrying in 60 seconds.",
       );
       this.pollTimer = setTimeout(() => this.start(), 60_000);
       return;
@@ -104,8 +104,6 @@ export class YoutubeAdapter implements PlatformAdapter {
   onMessage(handler: MessageHandler): void {
     this.messageHandler = handler;
   }
-
-  // ── Private ──────────────────────────────────────────────────────────────
 
   private async fetchActiveLiveChatId(): Promise<string | null> {
     try {
