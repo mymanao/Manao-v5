@@ -77,7 +77,10 @@ const en = {
     version: (botVersion: string, bunVersion: string) =>
       `ManaoBot v${botVersion} running on Bun v${bunVersion}`,
     uptime: (duration: string) => `Stream has been online for ${duration}`,
+    followage: (duration: string) => `You've been following for ${duration}`,
     offline: () => "Stream is offline",
+    years: () => "year(s)",
+    days: () => "day(s)",
     hours: () => "hour(s)",
     minutes: () => "minute(s)",
     seconds: () => "second(s)",
@@ -114,8 +117,8 @@ const en = {
     errorCannotAnnounce: () => "Failed to send announcement",
     errorCannotShoutout: () => "Shoutout failed",
     errorUserNotFound: (user: string) => `User not found: ${user}`,
-    errorInvalidAction: () =>
-      "Invalid action, valid actions are: connect, disconnect",
+    errorInvalidAction: (actions: string[]) =>
+      `Invalid action, valid actions are: ${actions.join(", ")}`,
     errorEventAlreadyConnected: () =>
       "An event is already connected, use !event disconnect first",
     errorUrlRequired: () => "Please provide a URL to connect to",
@@ -217,6 +220,7 @@ const th: typeof en = {
     version: (botVersion, bunVersion) =>
       `ManaoBot v${botVersion} รันบน Bun v${bunVersion}`,
     uptime: (duration) => `สตรีมออนไลน์มาแล้ว ${duration}`,
+    followage: (duration) => `คุณติดตามมาแล้ว ${duration}`,
     offline: () => "สตรีมออฟไลน์",
     hours: () => "ชั่วโมง",
     minutes: () => "นาที",
@@ -251,7 +255,7 @@ const th: typeof en = {
     errorCannotAnnounce: () => "ไม่สามารถส่งประกาศได้",
     errorCannotShoutout: () => "ไม่สามารถ Shoutout ได้",
     errorUserNotFound: (user) => `ไม่พบผู้ใช้: ${user}`,
-    errorInvalidAction: () => "คำสั่งไม่ถูกต้อง คำสั่งที่ถูกต้อง: connect, disconnect",
+    errorInvalidAction: (actions: string[]) => `คำสั่งไม่ถูกต้อง คำสั่งที่ถูกต้อง: ${actions.join(", ")}`,
     errorEventAlreadyConnected: () =>
       "มีอีเวนต์เชื่อมต่ออยู่แล้ว ใช้ !event disconnect ก่อน",
     errorUrlRequired: () => "กรุณาใส่ URL ที่ต้องการเชื่อมต่อ",
