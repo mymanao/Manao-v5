@@ -16,10 +16,6 @@ import type { ChatMessageEvent } from "@manaobot/kick/types";
 
 export class KickAdapter implements PlatformAdapter {
   readonly platform = "kick" as const;
-  readonly eventHandlers = new Map<string, (data: unknown) => void>
-  onEvent(event: string, handler: (data: unknown) => void) {
-    this.eventHandlers.set(event, handler);
-  };
 
   private bot!: KickIt;
   private messageHandler?: MessageHandler;
@@ -63,25 +59,6 @@ export class KickAdapter implements PlatformAdapter {
     });
 
     await this.bot.start();
-
-    this.onEvent("getUptime", async (data) => {
-      const { callback } = data as {
-        callback: (startDate: Date | null) => Promise<void>;
-      };
-
-      try {
-        const { data } = await this.bot.kickClient.api.livestreams.get();
-        const [stream] = data;
-        if (!stream || !stream.started_at) {
-          await callback(null);
-          return;
-        }
-        await callback(new Date(stream.started_at) ?? null);
-      } catch (err) {
-        logger.error(`[Twitch] Failed to get uptime: ${err}`);
-        await callback(null);
-      }
-    });
 
     this.bot.kickClient.webhooks.on(
       "chat.message.sent",
@@ -169,6 +146,14 @@ export class KickAdapter implements PlatformAdapter {
             // Kick API has no user lookup by name — return null
             return null;
           },
+          getUptime: async () => {
+            const { data } = await this.bot.kickClient.api.livestreams.get();
+            const [stream] = data;
+            if (!stream || !stream.started_at) {
+              return null;
+            }
+            return new Date(stream.started_at) ?? null;
+          }
         };
 
         await runCommand(

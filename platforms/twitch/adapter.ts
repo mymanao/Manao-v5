@@ -144,10 +144,6 @@ async function processBadges(
 
 export class TwitchAdapter implements PlatformAdapter {
   readonly platform = "twitch" as const;
-  readonly eventHandlers = new Map<string, (data: unknown) => void>();
-  onEvent(event: string, handler: (data: unknown) => void): void {
-    this.eventHandlers.set(event, handler);
-  }
 
   private chatClient!: ChatClient;
   private apiClient!: ApiClient;
@@ -307,6 +303,18 @@ export class TwitchAdapter implements PlatformAdapter {
               return stream?.startDate ?? null;
             } catch (err) {
               logger.error(`[Twitch] Failed to get uptime: ${err}`);
+              return null;
+            }
+          },
+          followage: async (targetID) => {
+            if (targetID === TWITCH.BROADCASTER.ID) {
+              const channelInfo = await this.apiClient.users.getUserById(TWITCH.BROADCASTER.ID);
+              return channelInfo?.creationDate ?? null;
+            }
+            let follow = await this.apiClient.channels.getChannelFollowers(TWITCH.BROADCASTER.ID, targetID);
+            if (follow && follow.data.length > 0) {
+              return follow.data[0]!.followDate ?? null;
+            } else {
               return null;
             }
           }
