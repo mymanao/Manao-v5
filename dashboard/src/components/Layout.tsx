@@ -1,3 +1,4 @@
+import { version } from "../../../package.json"
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -110,7 +111,7 @@ function DrawerContent({ onClose }: { onClose?: () => void }) {
               variant="caption"
               sx={{ color: "text.disabled", fontSize: "0.65rem" }}
             >
-              Version 5
+              Version {version}
             </Typography>
           </Box>
         </Box>
