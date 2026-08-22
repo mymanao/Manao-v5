@@ -455,11 +455,11 @@ export function MusicOverlay() {
         ref={playerContainerRef}
         sx={{
           position: "absolute",
-          width: 1,
-          height: 1,
-          opacity: 0,
-          pointerEvents: "none",
-          "& iframe": { width: "1px !important", height: "1px !important" },
+          left: "-9999px",
+          top: 0,
+          width: "300px",
+          height: "300px",
+          "& iframe": { width: "300px", height: "300px", border: 0 },
         }}
       />
 

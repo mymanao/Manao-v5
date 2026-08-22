@@ -1,4 +1,4 @@
-import { version } from "../../../package.json"
+import { version } from "../../../package.json";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
