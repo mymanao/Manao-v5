@@ -84,7 +84,7 @@ const en = {
     hours: () => "hour(s)",
     minutes: () => "minute(s)",
     seconds: () => "second(s)",
-    help: () => "Type !help followed by a command name to see its details",
+    help: () => "Visit https://manao.otternoon.com/commands to see all commands!",
     errorCommandNotFound: (name: string) => `Command "${name}" not found`,
   },
 
@@ -222,10 +222,12 @@ const th: typeof en = {
     uptime: (duration) => `สตรีมออนไลน์มาแล้ว ${duration}`,
     followage: (duration) => `คุณติดตามมาแล้ว ${duration}`,
     offline: () => "สตรีมออฟไลน์",
+    years: () => "ปี",
+    days: () => "วัน",
     hours: () => "ชั่วโมง",
     minutes: () => "นาที",
     seconds: () => "วินาที",
-    help: () => "พิมพ์ !help ตามด้วยชื่อคำสั่ง เพื่อดูรายละเอียด",
+    help: () => "ไปที่ https://manao.otternoon.com/commands/ เพื่อดูคำสั่งทั้งหมดจ้า",
     errorCommandNotFound: (name) => `ไม่พบคำสั่ง "${name}"`,
   },
 
