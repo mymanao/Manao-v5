@@ -2,7 +2,7 @@ import type { ChatMessageEvent, KickScopes } from "@mymanao/kick/types";
 import { KickClient } from "@mymanao/kick";
 import type { KickIt } from "./src";
 
-export * from "@mymanao/kick/types"
+export * from "@mymanao/kick/types";
 
 export interface NgrokOptions {
   authtoken?: string;

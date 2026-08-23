@@ -1,12 +1,12 @@
 import { KickClient } from "@mymanao/kick";
-import type {ChatMessageEvent, KickTokenResponse} from "@mymanao/kick/types";
+import type { ChatMessageEvent, KickTokenResponse } from "@mymanao/kick/types";
 import type {
   CommandHandler,
   KickItContext,
   KickItOptions,
   NgrokOptions,
 } from "../types";
-import {saveEnv} from "../utils";
+import { saveEnv } from "../utils";
 
 export class KickIt {
   private commands = new Map<string, CommandHandler>();
@@ -40,8 +40,10 @@ export class KickIt {
             KICK_EXPIRES_AT: String(tokens.expires_at),
           });
 
-          console.log(`[✔] Tokens updated. Access token expires at: ${new Date(tokens.expires_at).toLocaleString()}`);
-        }
+          console.log(
+            `[✔] Tokens updated. Access token expires at: ${new Date(tokens.expires_at).toLocaleString()}`,
+          );
+        },
       },
       scopes: options.auth.scopes,
       redirectUri:
