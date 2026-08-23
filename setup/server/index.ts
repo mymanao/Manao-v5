@@ -292,14 +292,14 @@ export function createSetupServer() {
     return { success: true };
   });
 
-  // Kick OAuth flow — calls authenticateKick() from @manaobot/kickit/utils
+  // Kick OAuth flow — calls authenticateKick() from @mymanao/kickit/utils
   app.post("/setup/api/kick/authorize", async ({ body }) => {
     const b = body as Record<string, string>;
     if (!b.clientId || !b.clientSecret) {
       return { success: false, error: "Client ID and Secret required" };
     }
     try {
-      const { authenticateKick } = await import("@manaobot/kickit/utils");
+      const { authenticateKick } = await import("@mymanao/kickit/utils");
       const { access_token, refresh_token, expires_at } =
         await authenticateKick({
           clientId: b.clientId,

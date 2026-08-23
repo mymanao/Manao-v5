@@ -4,11 +4,11 @@
     <h2 align="center">KickIt</h2>
   </a>
   <p align="center">
-    Lightweight command framework for building Kick.com bots on top of <code>@manaobot/kick</code>.
+    Lightweight command framework for building Kick.com bots on top of <code>@mymanao/kick</code>.
     Designed for Bun. Built for simplicity.
   </p>
   <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;">
-    <img src="https://img.shields.io/npm/v/@manaobot/kickit?color=00e701" alt="npm version">
+    <img src="https://img.shields.io/npm/v/@mymanao/kickit?color=00e701" alt="npm version">
     <img src="https://img.shields.io/github/license/tinarskii/manao" />
     <img src="https://img.shields.io/badge/Bun-%E2%9C%93-black?logo=bun" alt="Bun Compatible">
     <a href="https://discord.gg/vkW7YMyYaf"><img src="https://img.shields.io/discord/964718161624715304" /></a>
@@ -19,7 +19,7 @@
 
 ## ⚡ About
 
-**KickIt** is a minimal command framework built on top of `@manaobot/kick`.
+**KickIt** is a minimal command framework built on top of `@mymanao/kick`.
 
 It provides a clean abstraction for:
 
@@ -35,7 +35,7 @@ KickIt does **not** replace the SDK — it extends it with a simple developer ex
 ## 📦 Installation
 
 ```bash
-bun add @manaobot/kickit
+bun add @mymanao/kickit
 ```
 
 KickIt optionally supports ngrok for local development. To enable ngrok support, also install the ngrok package:
@@ -118,7 +118,7 @@ This keeps KickIt lightweight while still giving full access to the SDK.
 
 ---
 
-### 🔗 Built on @manaobot/kick
+### 🔗 Built on @mymanao/kick
 
 KickIt uses the official SDK internally:
 
@@ -284,5 +284,5 @@ See LICENSE file for details.
 
 KickIt works alongside:
 
-- `@manaobot/kick` — Core SDK
+- `@mymanao/kick` — Core SDK
 - KickIt — Command framework

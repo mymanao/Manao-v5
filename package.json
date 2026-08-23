@@ -30,8 +30,8 @@
   "dependencies": {
     "@discordx/importer": "^1.3.3",
     "@elysiajs/static": "^1.4.7",
-    "@manaobot/kick": "workspace:*",
-    "@manaobot/kickit": "workspace:*",
+    "@mymanao/kick": "workspace:*",
+    "@mymanao/kickit": "workspace:*",
     "@ngrok/ngrok": "^1.7.0",
     "@twurple/api": "^8.0.3",
     "@twurple/auth": "^8.0.3",

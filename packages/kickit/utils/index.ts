@@ -1,5 +1,5 @@
-import type { KickScopes, KickTokenResponse } from "@manaobot/kick/types";
-import { KickClient } from "@manaobot/kick";
+import type { KickScopes, KickTokenResponse } from "@mymanao/kick/types";
+import { KickClient } from "@mymanao/kick";
 import open from "open";
 
 const VALID_SCOPES: KickScopes[] = [

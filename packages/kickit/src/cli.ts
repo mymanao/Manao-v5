@@ -1,6 +1,6 @@
 import { password } from "@inquirer/prompts";
 import { parseArgs } from "util";
-import type { KickScopes } from "@manaobot/kick/types";
+import type { KickScopes } from "@mymanao/kick/types";
 import { authenticateKick, isKickScope } from "../utils";
 
 function parseCli() {

@@ -1,5 +1,5 @@
-import { KickClient } from "@manaobot/kick";
-import type {ChatMessageEvent, KickTokenResponse} from "@manaobot/kick/types";
+import { KickClient } from "@mymanao/kick";
+import type {ChatMessageEvent, KickTokenResponse} from "@mymanao/kick/types";
 import type {
   CommandHandler,
   KickItContext,

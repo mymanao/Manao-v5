@@ -1,14 +1,14 @@
 <p align="center">
   <a href="https://github.com/tinarskii/manao">
     <img src="https://raw.githubusercontent.com/tinarskii/manao/main/docs/manao.svg" height="64px" width="auto" />
-    <h2 align="center">@manaobot/kick</h2>
+    <h2 align="center">@mymanao/kick</h2>
   </a>
   <p align="center">
     Minimal, type-safe JavaScript SDK for building Kick.com bots.
     Designed for Bun. Works anywhere.
   </p>
   <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;">
-    <img src="https://img.shields.io/npm/v/@manaobot/kick?color=00e701" alt="npm version">
+    <img src="https://img.shields.io/npm/v/@mymanao/kick?color=00e701" alt="npm version">
     <img src="https://img.shields.io/github/license/tinarskii/manao" />
     <img src="https://img.shields.io/badge/Bun-%E2%9C%93-black?logo=bun" alt="Bun Compatible">
     <a href="https://discord.gg/vkW7YMyYaf"><img src="https://img.shields.io/discord/964718161624715304" /></a>
@@ -19,7 +19,7 @@
 
 ## ⚡ About
 
-`@manaobot/kick` is a lightweight TypeScript SDK for building Kick.com bots, tools, and automation.
+`@mymanao/kick` is a lightweight TypeScript SDK for building Kick.com bots, tools, and automation.
 This library focuses on **OAuth**, **Webhooks**, and **REST APIs**, everything required to build production-grade Kick bots.
 
 ---
@@ -27,7 +27,7 @@ This library focuses on **OAuth**, **Webhooks**, and **REST APIs**, everything r
 ## 📦 Installation
 
 ```bash
-bun add @manaobot/kick
+bun add @mymanao/kick
 ````
 
 ---
@@ -35,7 +35,7 @@ bun add @manaobot/kick
 ## 🚀 Quick Start
 
 ```ts
-import { KickClient } from "@manaobot/kick";
+import { KickClient } from "@mymanao/kick";
 
 const kick = new KickClient({
   clientId: process.env.KICK_CLIENT_ID!,

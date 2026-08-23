@@ -31,6 +31,7 @@ const kick = new KickClient({
       ? {
           access_token: Bun.env.KICK_ACCESS_TOKEN!,
           refresh_token: Bun.env.KICK_REFRESH_TOKEN!,
+          expires_at: parseInt(Bun.env.KICK_EXPIRES_AT ?? "0")
         }
       : undefined,
     onTokenUpdate: (tokens: KickTokenResponse) => {

@@ -1,5 +1,5 @@
 {
-  "name": "@manaobot/kickit",
+  "name": "@mymanao/kickit",
   "version": "1.3.5",
   "description": "Kick.com bot framework using Manao's kick library",
   "author": "Tinnaphat Somsang <tinvv@outlook.co.th>",
@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@inquirer/prompts": "^8.2.0",
-    "@manaobot/kick": "^1.1.3",
+    "@mymanao/kick": "workspace:*",
     "open": "^11.0.0"
   },
   "scripts": {
