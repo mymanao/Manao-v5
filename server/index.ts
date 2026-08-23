@@ -49,7 +49,7 @@ export function startServer(
 ): void {
   const app = createServer(registry, lang);
   app.listen({ port: webPort, hostname: "0.0.0.0" }, async ({ port }) => {
-    logger.info(`[Server] Running on http://${await internalIpV4()}:${port}`);
-    await open(`http://${await internalIpV4()}:${port}`);
+    logger.info(`[Server] Running on http://${await internalIpV4()}:${port} <==========================`);
+    await open(`http://localhost:${port}`);
   });
 }
