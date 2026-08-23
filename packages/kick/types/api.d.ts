@@ -22,21 +22,31 @@ export type GetCategoriesParams = {
   id?: number[];
 };
 
-/**
- * @interface KickChannel
- * @property {string} slug - The unique identifier for the channel.
- * @property {string} stream_title - The title of the current stream.
- * @property {object} [category] - The category of the stream, if available.
- * @property {number} category.id - The unique identifier for the category.
- * @property {string} category.name - The name of the category.
- */
 export interface KickChannel {
-  slug: string;
-  stream_title: string;
-  category?: {
+  active_gifted_subscribers_count: number;
+  active_subscribers_count: number;
+  banner_picture: string;
+  broadcaster_user_id: number;
+  canceled_subscribers_count: number;
+  category: {
     id: number;
     name: string;
+    thumbnail: string;
   };
+  channel_description: string;
+  slug: string;
+  stream: {
+    custom_tags: string[];
+    is_live: boolean;
+    is_mature: boolean;
+    key: string;
+    language: string;
+    start_time: string;
+    thumbnail: string;
+    url: string;
+    viewer_count: number;
+  };
+  stream_title: string;
 }
 
 export interface ChannelRewardBase {

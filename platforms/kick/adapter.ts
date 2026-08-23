@@ -147,12 +147,12 @@ export class KickAdapter implements PlatformAdapter {
             return null;
           },
           getUptime: async () => {
-            const { data } = await this.bot.kickClient.api.livestreams.get();
-            const [stream] = data;
-            if (!stream || !stream.started_at) {
+            const { data } = await this.bot.kickClient.api.channels.get();
+            const [channel] = data;
+            if (!channel || !channel.stream.is_live) {
               return null;
             }
-            return new Date(stream.started_at) ?? null;
+            return new Date(channel.stream.start_time) ?? null;
           },
         };
 
