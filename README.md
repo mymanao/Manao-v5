@@ -5,7 +5,7 @@
   <img src="https://img.shields.io/github/license/tinarskii/Manao-v5?style=flat-square" alt="license" />
   <img src="https://img.shields.io/badge/runtime-Bun-f9f1e1?style=flat-square&logo=bun" alt="bun" />
   <img src="https://img.shields.io/badge/platforms-Twitch%20%7C%20Kick%20%7C%20Discord-9147ff?style=flat-square" alt="platforms" />
-  <a href="https://discord.gg/vkW7YMyYaf"><img src="https://img.shields.io/discord/964718161624715304?style=flat-square&logo=discord&label=discord" alt="discord" /></a>
+  <a href="https://discord.gg/agfbRJF5tx"><img src="https://img.shields.io/discord/1536450450973397154?style=flat-square&logo=discord&label=discord" alt="discord" /></a>
 </div>
 
 ---
