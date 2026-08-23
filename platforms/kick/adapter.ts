@@ -10,9 +10,9 @@ import type {
   MessageData,
 } from "@/core/types";
 import type { CommandRegistry } from "@/core/registry";
-import { KickIt } from "@manaobot/kickit";
+import { KickIt } from "@mymanao/kickit";
+import type { ChatMessageEvent } from "@mymanao/kick/types";
 import { io } from "@/server/services/socket.io";
-import type { ChatMessageEvent } from "@manaobot/kick/types";
 
 export class KickAdapter implements PlatformAdapter {
   readonly platform = "kick" as const;
@@ -54,7 +54,7 @@ export class KickAdapter implements PlatformAdapter {
       ngrok: {
         authtoken: KICK.NGROK_AUTHTOKEN,
         domain: KICK.NGROK_DOMAIN,
-        port: 0,
+        port: 5112,
       },
     });
 
