@@ -3,18 +3,17 @@
     // Environment setup & latest features
     "lib": ["ESNext"],
     "target": "ESNext",
-    "module": "ESNext",
+    "module": "nodenext",
     "moduleDetection": "force",
     "allowJs": true,
-    "baseUrl": ".",
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "paths": {
-      "@/*": ["*"],
-      "@web/*": ["dashboard/src/*"]
+      "@/*": ["./*"],
+      "@web/*": ["./dashboard/src/*"]
     },
     // Bundler mode
-    "moduleResolution": "node",
+    "moduleResolution": "nodenext",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "noEmit": true,
