@@ -40,7 +40,7 @@ export const io = new Server({
     allowedHeaders: ["Content-Type"],
     credentials: true,
   },
-}).listen(0);
+}).listen(1776); // god bless america
 
 io.on("connection", handleConnection);
 
