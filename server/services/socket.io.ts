@@ -2,7 +2,7 @@ import { logger } from "@/helpers/logger";
 import { Server, type Socket } from "socket.io";
 import type { SongRequestData } from "@/core/types.ts";
 import type { AddressInfo } from "net";
-import { internalIpV4Sync } from "internal-ip";
+import {internalIpV4, internalIpV4Sync} from "internal-ip";
 
 export const songQueue: SongRequestData[] = [];
 
@@ -46,6 +46,6 @@ io.on("connection", handleConnection);
 
 const SOCKET_ADDR_INFO = io.httpServer.address() as AddressInfo;
 export const SOCKET_PORT = SOCKET_ADDR_INFO.port;
-export const SOCKET_URL = `ws://${internalIpV4Sync()}:${SOCKET_PORT}`;
+export const SOCKET_URL = `ws://${await internalIpV4()}:${SOCKET_PORT}`;
 
 logger.info(`[Socket] Socket.IO server running on ${SOCKET_URL}`);
