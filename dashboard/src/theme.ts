@@ -36,7 +36,7 @@ export const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: "'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif",
+    fontFamily: "'Sora', sans-serif",
     h1: { fontWeight: 700, letterSpacing: "-0.02em" },
     h2: { fontWeight: 700, letterSpacing: "-0.02em" },
     h3: { fontWeight: 600, letterSpacing: "-0.01em" },
@@ -52,7 +52,7 @@ export const theme = createTheme({
   components: {
     MuiCssBaseline: {
       styleOverrides: `
-        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap');
         body { background: #0D0D0D; }
         ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }

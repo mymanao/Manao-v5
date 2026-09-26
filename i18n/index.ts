@@ -84,7 +84,8 @@ const en = {
     hours: () => "hour(s)",
     minutes: () => "minute(s)",
     seconds: () => "second(s)",
-    help: () => "Visit https://manao.otternoon.com/commands to see all commands!",
+    help: () =>
+      "Visit https://manao.otternoon.com/commands to see all commands!",
     errorCommandNotFound: (name: string) => `Command "${name}" not found`,
   },
 

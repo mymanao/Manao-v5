@@ -12016,7 +12016,7 @@ const Xx = ix({
       },
     },
     typography: {
-      fontFamily: "'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif",
+      fontFamily: "'Sora', sans-serif",
       h1: { fontWeight: 700, letterSpacing: "-0.02em" },
       h2: { fontWeight: 700, letterSpacing: "-0.02em" },
       h3: { fontWeight: 600, letterSpacing: "-0.01em" },
@@ -12036,7 +12036,7 @@ const Xx = ix({
     components: {
       MuiCssBaseline: {
         styleOverrides: `
-        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap');
         body { background: #0D0D0D; }
         ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -14809,10 +14809,13 @@ function cg() {
     sx: {
       position: "fixed",
       inset: 0,
+      width: "100vw",
+      height: "100vh",
+      boxSizing: "border-box",
       display: "flex",
       flexDirection: "column",
       justifyContent: "flex-end",
-      p: 2,
+      p: 0,
       overflow: "hidden",
       background: "transparent",
       fontFamily:
@@ -14830,12 +14833,16 @@ function cg() {
               {
                 sx: {
                   position: "relative",
-                  mb: 1,
-                  ml: "25px",
-                  mr: "5px",
-                  alignSelf: "flex-end",
-                  width: "fit-content",
-                  maxWidth: j.maxWidth,
+                  mb: 0,
+                  ml: 0,
+                  mr: 0,
+                  alignSelf: "stretch",
+                  width: "100%",
+                  maxWidth: "100%",
+                  boxSizing: "border-box",
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  alignItems: "stretch",
                   animation: I.has(E.key)
                     ? `${j.animationOut} 0.75s ease forwards`
                     : `${j.animationIn} 0.75s ease forwards`,
@@ -14855,7 +14862,10 @@ function cg() {
                   }),
                   u.jsxs(m, {
                     sx: {
-                      p: "8px 12px",
+                      width: "100%",
+                      maxWidth: "100%",
+                      boxSizing: "border-box",
+                      p: "40px 48px",
                       background: U(E.roles),
                       borderRight: `10px solid ${E.color || "#fff"}`,
                       wordBreak: "break-word",
@@ -14875,7 +14885,7 @@ function cg() {
                               fontFamily:
                                 "'EB Garamond', 'IBM Plex Sans Thai', serif",
                               fontWeight: 700,
-                              fontSize: `${j.fontSize * 1.15}px`,
+                              fontSize: `${j.fontSize * 1.75}px`,
                               color: _(E.roles),
                               textShadow: "2px 2px 2px rgba(0,0,0,0.3)",
                             },
@@ -14907,7 +14917,7 @@ function cg() {
                         children: u.jsx("span", {
                           style: {
                             fontFamily: "'IBM Plex Sans Thai', sans-serif",
-                            fontSize: `${j.fontSize}px`,
+                            fontSize: `${j.fontSize * 1.75}px`,
                             color: _(E.roles),
                             textShadow: "2px 2px 2px rgba(0,0,0,0.3)",
                             wordBreak: "break-word",
@@ -14926,12 +14936,15 @@ function cg() {
               m,
               {
                 sx: {
-                  mb: 0.75,
-                  p: `${j.padding}px`,
+                  mb: 0.5,
+                  p: `${Math.max(j.padding * 2, 24)}px`,
                   borderRadius: `${j.borderRadius}px`,
                   background: j.bgColor,
                   backdropFilter: "blur(4px)",
-                  maxWidth: j.maxWidth,
+                  width: "100vw",
+                  maxWidth: "none",
+                  flexShrink: 0,
+                  boxSizing: "border-box",
                   boxShadow: j.boxShadow
                     ? "0 2px 8px rgba(0,0,0,0.25)"
                     : "none",

@@ -166,10 +166,13 @@ export function ChatOverlay() {
       sx={{
         position: "fixed",
         inset: 0,
+        width: "100vw",
+        height: "100vh",
+        boxSizing: "border-box",
         display: "flex",
         flexDirection: "column",
         justifyContent: "flex-end",
-        p: 2,
+        p: 0,
         overflow: "hidden",
         background: "transparent",
         fontFamily:
@@ -188,12 +191,16 @@ export function ChatOverlay() {
               key={msg.key}
               sx={{
                 position: "relative",
-                mb: 1,
-                ml: "25px",
-                mr: "5px",
-                alignSelf: "flex-end",
-                width: "fit-content",
-                maxWidth: s.maxWidth,
+                mb: 0,
+                ml: 0,
+                mr: 0,
+                alignSelf: "stretch",
+                width: "100%",
+                maxWidth: "100%",
+                boxSizing: "border-box",
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "stretch",
                 animation: exiting.has(msg.key)
                   ? `${s.animationOut} 0.75s ease forwards`
                   : `${s.animationIn} 0.75s ease forwards`,
@@ -215,7 +222,10 @@ export function ChatOverlay() {
               {/* Card */}
               <Box
                 sx={{
-                  p: "8px 12px",
+                  width: "100%",
+                  maxWidth: "100%",
+                  boxSizing: "border-box",
+                  p: "40px 48px",
                   background: lucianBg(msg.roles),
                   borderRight: `10px solid ${msg.color || "#fff"}`,
                   wordBreak: "break-word",
@@ -235,7 +245,7 @@ export function ChatOverlay() {
                     style={{
                       fontFamily: "'EB Garamond', 'IBM Plex Sans Thai', serif",
                       fontWeight: 700,
-                      fontSize: `${s.fontSize * 1.15}px`,
+                      fontSize: `${s.fontSize * 1.75}px`,
                       color: lucianTextColor(msg.roles),
                       textShadow: "2px 2px 2px rgba(0,0,0,0.3)",
                     }}
@@ -263,7 +273,7 @@ export function ChatOverlay() {
                   <span
                     style={{
                       fontFamily: "'IBM Plex Sans Thai', sans-serif",
-                      fontSize: `${s.fontSize}px`,
+                      fontSize: `${s.fontSize * 1.75}px`,
                       color: lucianTextColor(msg.roles),
                       textShadow: "2px 2px 2px rgba(0,0,0,0.3)",
                       wordBreak: "break-word",
@@ -282,12 +292,15 @@ export function ChatOverlay() {
           <Box
             key={msg.key}
             sx={{
-              mb: 0.75,
-              p: `${s.padding}px`,
+              mb: 0.5,
+              p: `${Math.max(s.padding * 2, 24)}px`,
               borderRadius: `${s.borderRadius}px`,
               background: s.bgColor,
               backdropFilter: "blur(4px)",
-              maxWidth: s.maxWidth,
+              width: "100vw",
+              maxWidth: "none",
+              flexShrink: 0,
+              boxSizing: "border-box",
               boxShadow: s.boxShadow ? "0 2px 8px rgba(0,0,0,0.25)" : "none",
               animation: exiting.has(msg.key)
                 ? `${s.animationOut} 0.75s ease forwards`

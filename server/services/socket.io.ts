@@ -2,7 +2,7 @@ import { logger } from "@/helpers/logger";
 import { Server, type Socket } from "socket.io";
 import type { SongRequestData } from "@/core/types.ts";
 import type { AddressInfo } from "net";
-import {internalIpV4, internalIpV4Sync} from "internal-ip";
+import { internalIpV4 } from "internal-ip";
 
 export const songQueue: SongRequestData[] = [];
 
