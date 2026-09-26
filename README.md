@@ -215,7 +215,7 @@ Make sure the bot is running (`bun start`) before opening the dashboard. The das
 
 ### How do I report a security vulnerability?
 
-Do not open a public issue. Join the [Discord server](https://discord.gg/vkW7YMyYaf) and DM `@acsp` (Tin) directly.
+Do not open a public issue. Join the [Discord server](https://discord.gg/agfbRJF5tx) first!!!! after that DM `@meowth_` (Tin) directly (i do not accept friend requests from stranger so pls join server).
 
 ---
 
