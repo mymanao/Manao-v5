@@ -13,6 +13,10 @@ import type { CommandRegistry } from "@/core/registry";
 import { KickIt } from "@mymanao/kickit";
 import type { ChatMessageEvent } from "@mymanao/kick/types";
 import { io } from "@/server/services/socket.io";
+import {
+  buildCustomReplyResponse,
+  runtimeCustomReplyCounters,
+} from "@/core/custom-replies";
 
 export class KickAdapter implements PlatformAdapter {
   readonly platform = "kick" as const;
@@ -165,7 +169,7 @@ export class KickAdapter implements PlatformAdapter {
         await this.messageHandler?.(ctx, message);
       } else {
         await this.handleChatReward(event);
-        await this.handleCustomReplies(message);
+        await this.handleCustomReplies(message, id);
       }
     } catch (err) {
       logger.error(`[Kick] Error handling message from ${user}: ${err}`);
@@ -214,7 +218,10 @@ export class KickAdapter implements PlatformAdapter {
     io.emit("message", messageData);
   }
 
-  private async handleCustomReplies(message: string): Promise<void> {
+  private async handleCustomReplies(
+    message: string,
+    userId: string,
+  ): Promise<void> {
     const lowerMsg = message.toLowerCase();
 
     for (const reply of this.config.customReplies) {
@@ -227,18 +234,14 @@ export class KickAdapter implements PlatformAdapter {
 
         if (!matched) continue;
 
-        let response = "";
-        if (reply.responseType === "random") {
-          response =
-            reply.responses[
-              Math.floor(Math.random() * reply.responses.length)
-            ] ?? "";
-        } else {
-          const key = reply.keywords.join(",");
-          const idx = this.sequenceIndex.get(key) ?? 0;
-          response = reply.responses[idx] ?? "";
-          this.sequenceIndex.set(key, (idx + 1) % reply.responses.length);
-        }
+        const response = await buildCustomReplyResponse(
+          reply,
+          userId,
+          { name: user, platform: "kick", platformID: userId },
+          this.config.language,
+          this.sequenceIndex,
+          runtimeCustomReplyCounters,
+        );
 
         if (response) {
           await this.bot.kickClient.chat.send({ content: response });

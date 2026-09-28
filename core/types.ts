@@ -155,10 +155,13 @@ export interface CustomMessages {
 }
 
 export interface CustomReplies {
+  id: string;
   keywordType: "includes" | "exact";
   responseType: "random" | "sequential";
   keywords: string[];
   responses: string[];
+  counterEnabled?: boolean;
+  keepCounter?: boolean;
 }
 
 export interface SoundEntry {

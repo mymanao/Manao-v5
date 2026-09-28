@@ -12,6 +12,10 @@ import type {
 import type { CommandRegistry } from "@/core/registry";
 import { io } from "@/server/services/socket.io";
 import { persistYoutubeTokens } from "./auth";
+import {
+  buildCustomReplyResponse,
+  runtimeCustomReplyCounters,
+} from "@/core/custom-replies";
 
 const BASE_URL = "https://www.googleapis.com/youtube/v3";
 const MIN_POLL_INTERVAL_MS = 5_000;
@@ -211,7 +215,7 @@ export class YoutubeAdapter implements PlatformAdapter {
         await this.messageHandler?.(ctx, message);
       } else {
         await this.handleChatReward(id);
-        await this.handleCustomReplies(message);
+        await this.handleCustomReplies(message, id);
         this.emitChatMessage(item, id);
       }
     } catch (err) {
@@ -261,7 +265,10 @@ export class YoutubeAdapter implements PlatformAdapter {
     }
   }
 
-  private async handleCustomReplies(message: string): Promise<void> {
+  private async handleCustomReplies(
+    message: string,
+    userId: string,
+  ): Promise<void> {
     const lowerMsg = message.toLowerCase();
 
     for (const reply of this.config.customReplies) {
@@ -274,18 +281,14 @@ export class YoutubeAdapter implements PlatformAdapter {
 
         if (!matched) continue;
 
-        let response = "";
-        if (reply.responseType === "random") {
-          response =
-            reply.responses[
-              Math.floor(Math.random() * reply.responses.length)
-            ] ?? "";
-        } else {
-          const key = reply.keywords.join(",");
-          const idx = this.sequenceIndex.get(key) ?? 0;
-          response = reply.responses[idx] ?? "";
-          this.sequenceIndex.set(key, (idx + 1) % reply.responses.length);
-        }
+        const response = await buildCustomReplyResponse(
+          reply,
+          userId,
+          { name: user, platform: "youtube", platformID: userId },
+          this.config.language,
+          this.sequenceIndex,
+          runtimeCustomReplyCounters,
+        );
 
         if (response) {
           await this.sendMessage("", response);

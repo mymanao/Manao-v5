@@ -1,5 +1,10 @@
 import { sql } from "drizzle-orm";
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import {
+  integer,
+  primaryKey,
+  sqliteTable,
+  text,
+} from "drizzle-orm/sqlite-core";
 
 export const users = sqliteTable("users", {
   id: text("id").primaryKey(),
@@ -48,3 +53,15 @@ export const customCommands = sqliteTable("custom_commands", {
     .notNull()
     .default(sql`(strftime('%s', 'now'))`),
 });
+
+export const customReplyCounters = sqliteTable(
+  "custom_reply_counters",
+  {
+    replyId: text("reply_id").notNull(),
+    userId: text("user_id").notNull(),
+    count: integer("count").notNull().default(0),
+  },
+  (table) => ({
+    primaryKey: primaryKey({ columns: [table.replyId, table.userId] }),
+  }),
+);

@@ -26,6 +26,8 @@ import {
   Alert,
   CircularProgress,
   Tooltip,
+  Checkbox,
+  FormControlLabel,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
@@ -34,10 +36,13 @@ import { api } from "@/hooks/useApi";
 import type { Configuration, CustomReplies } from "@/types/api";
 
 const emptyReply = (): CustomReplies => ({
+  id: crypto.randomUUID(),
   keywordType: "includes",
   responseType: "random",
   keywords: [],
   responses: [],
+  counterEnabled: false,
+  keepCounter: false,
 });
 
 export function RepliesPage() {
@@ -98,6 +103,7 @@ export function RepliesPage() {
       const reply: CustomReplies = {
         keywordType: form.keywordType,
         responseType: form.responseType,
+        id: form.id,
         keywords: form.keywordsStr
           .split(",")
           .map((s) => s.trim())
@@ -106,6 +112,8 @@ export function RepliesPage() {
           .split(",")
           .map((s) => s.trim())
           .filter(Boolean),
+        counterEnabled: form.counterEnabled,
+        keepCounter: form.keepCounter,
       };
       const next =
         editIdx !== null
@@ -231,6 +239,14 @@ export function RepliesPage() {
                       >
                         {r.responses.join(" | ")}
                       </Typography>
+                      {r.counterEnabled && (
+                        <Chip
+                          label={r.keepCounter ? "Counter (kept)" : "Counter"}
+                          size="small"
+                          color="secondary"
+                          sx={{ ml: 1 }}
+                        />
+                      )}
                     </TableCell>
                     <TableCell align="right">
                       <Tooltip title="Edit">
@@ -322,8 +338,43 @@ export function RepliesPage() {
               onChange={(e) =>
                 setForm({ ...form, responsesStr: e.target.value })
               }
-              placeholder="Hello!, Hi there!, Hey!"
+              placeholder="Hello [user]! You are [username]. [counter] time(s)!"
             />
+            <Typography variant="caption" color="text.secondary">
+              Templates support <code>[user]</code> to tag the requester,{" "}
+              <code>[username]</code> for their username, and{" "}
+              <code>[counter]</code> when counters are enabled.
+            </Typography>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={form.counterEnabled ?? false}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      counterEnabled: e.target.checked,
+                      keepCounter: e.target.checked
+                        ? (form.keepCounter ?? false)
+                        : false,
+                    })
+                  }
+                />
+              }
+              label="Add a counter (use [counter] to place it, or append it automatically)"
+            />
+            {form.counterEnabled && (
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={form.keepCounter ?? false}
+                    onChange={(e) =>
+                      setForm({ ...form, keepCounter: e.target.checked })
+                    }
+                  />
+                }
+                label="Keep counter between bot restarts"
+              />
+            )}
           </Stack>
         </DialogContent>
         <DialogActions sx={{ p: 2 }}>

@@ -19,6 +19,10 @@ import {
 } from "@twurple/chat";
 import { type AccessToken, RefreshingAuthProvider } from "@twurple/auth";
 import { io } from "@/server/services/socket.io";
+import {
+  buildCustomReplyResponse,
+  runtimeCustomReplyCounters,
+} from "@/core/custom-replies";
 
 type UserType = "bot" | "broadcaster";
 
@@ -333,8 +337,9 @@ export class TwitchAdapter implements PlatformAdapter {
         );
         await this.messageHandler?.(ctx, message);
       } else {
+        const id = initAccount(userId, "twitch");
         await this.handleChatReward(userId, message, msgObj);
-        await this.handleCustomReplies(channel, message);
+        await this.handleCustomReplies(channel, message, id);
       }
     } catch (err) {
       logger.error(`[Twitch] Error handling message from ${user}: ${err}`);
@@ -390,6 +395,7 @@ export class TwitchAdapter implements PlatformAdapter {
   private async handleCustomReplies(
     channel: string,
     message: string,
+    userId: string,
   ): Promise<void> {
     const lowerMsg = message.toLowerCase();
 
@@ -403,18 +409,18 @@ export class TwitchAdapter implements PlatformAdapter {
 
         if (!matched) continue;
 
-        let response = "";
-        if (reply.responseType === "random") {
-          response =
-            reply.responses[
-              Math.floor(Math.random() * reply.responses.length)
-            ] ?? "";
-        } else {
-          const key = reply.keywords.join(",");
-          const idx = this.sequenceIndex.get(key) ?? 0;
-          response = reply.responses[idx] ?? "";
-          this.sequenceIndex.set(key, (idx + 1) % reply.responses.length);
-        }
+        const response = await buildCustomReplyResponse(
+          reply,
+          userId,
+          {
+            name: msgObj.userInfo.displayName,
+            platform: "twitch",
+            platformID: userId,
+          },
+          this.config.language,
+          this.sequenceIndex,
+          runtimeCustomReplyCounters,
+        );
 
         if (response) {
           await this.chatClient.say(channel, response);

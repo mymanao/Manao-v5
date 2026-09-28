@@ -5,6 +5,13 @@ import { updateConfig } from "@/index.ts";
 
 const CONFIG_PATH = `${process.cwd()}/userConfig.json`;
 
+function normalizeCustomReplies(replies: Configuration["customReplies"]) {
+  return replies.map((reply, index) => ({
+    ...reply,
+    id: reply.id || `legacy-${index}-${reply.keywords.join(",")}`,
+  }));
+}
+
 export async function getUserConfig(): Promise<Configuration> {
   const defaults = getDefaultConfig();
   const file = Bun.file(CONFIG_PATH);
@@ -21,6 +28,9 @@ export async function getUserConfig(): Promise<Configuration> {
     prefix: { ...defaults.prefix, ...saved.prefix },
     chatRewards: { ...defaults.chatRewards, ...saved.chatRewards },
     customMessages: { ...defaults.customMessages, ...saved.customMessages },
+    customReplies: normalizeCustomReplies(
+      saved.customReplies ?? defaults.customReplies,
+    ),
     overlaySettings: {
       music: {
         ...defaults.overlaySettings.music,

@@ -19,6 +19,10 @@ import {
 } from "discord.js";
 import { Client } from "discordx";
 import { io } from "@/server/services/socket.io";
+import {
+  buildCustomReplyResponse,
+  runtimeCustomReplyCounters,
+} from "@/core/custom-replies";
 
 export class DiscordAdapter implements PlatformAdapter {
   readonly platform = "discord" as const;
@@ -105,7 +109,7 @@ export class DiscordAdapter implements PlatformAdapter {
           id,
           name: message.author.username,
           platform: "discord",
-          platformID: discordId,
+          platformID: message.author.id,
           roles: {
             isFollower: false,
             isSubscriber: false,
@@ -149,7 +153,7 @@ export class DiscordAdapter implements PlatformAdapter {
           this.config.disabledCommands,
         );
       } else {
-        await this.handleCustomReplies(message);
+        await this.handleCustomReplies(message, id);
       }
 
       await this.messageHandler?.(ctx, message.content);
@@ -175,7 +179,10 @@ export class DiscordAdapter implements PlatformAdapter {
     }
   }
 
-  private async handleCustomReplies(message: Message): Promise<void> {
+  private async handleCustomReplies(
+    message: Message,
+    userId: string,
+  ): Promise<void> {
     const lowerMsg = message.content.toLowerCase();
 
     for (const reply of this.config.customReplies) {
@@ -188,18 +195,18 @@ export class DiscordAdapter implements PlatformAdapter {
 
         if (!matched) continue;
 
-        let response = "";
-        if (reply.responseType === "random") {
-          response =
-            reply.responses[
-              Math.floor(Math.random() * reply.responses.length)
-            ] ?? "";
-        } else {
-          const key = reply.keywords.join(",");
-          const idx = this.sequenceIndex.get(key) ?? 0;
-          response = reply.responses[idx] ?? "";
-          this.sequenceIndex.set(key, (idx + 1) % reply.responses.length);
-        }
+        const response = await buildCustomReplyResponse(
+          reply,
+          userId,
+          {
+            name: message.author.username,
+            platform: "discord",
+            platformID: message.author.id,
+          },
+          this.config.language,
+          this.sequenceIndex,
+          runtimeCustomReplyCounters,
+        );
 
         if (response) {
           if (!message.channel.isDMBased())

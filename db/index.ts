@@ -10,6 +10,16 @@ export const db = drizzle(sqlite, { schema });
 
 migrate(db, { migrationsFolder: "./db/migrations" });
 
+const pK = {
+  twitch: "twitchId",
+  youtube: "youtubeId",
+  kick: "kickId",
+  discord: "discordId",
+} as const satisfies Record<
+  Platform,
+  keyof typeof schema.linkedAccounts.$inferInsert
+>;
+
 export function getLinkedId(
   platformId: string,
   platform: Platform,
@@ -23,17 +33,46 @@ export function getLinkedId(
   return row?.id;
 }
 
+export function incrementCustomReplyCounter(
+  replyId: string,
+  userId: string,
+): number {
+  const existing = db
+    .select({ count: schema.customReplyCounters.count })
+    .from(schema.customReplyCounters)
+    .where(
+      sql`${schema.customReplyCounters.replyId} = ${replyId} AND ${schema.customReplyCounters.userId} = ${userId}`,
+    )
+    .get();
+
+  const count = (existing?.count ?? 0) + 1;
+  if (existing) {
+    db.update(schema.customReplyCounters)
+      .set({ count })
+      .where(
+        sql`${schema.customReplyCounters.replyId} = ${replyId} AND ${schema.customReplyCounters.userId} = ${userId}`,
+      )
+      .run();
+  } else {
+    db.insert(schema.customReplyCounters)
+      .values({ replyId, userId, count })
+      .run();
+  }
+  return count;
+}
+
 export function initAccount(platformId: string, platform: Platform): string {
   const existing = getLinkedId(platformId, platform);
   if (existing) return existing;
 
   const id = Bun.randomUUIDv7();
-  const column = platformToColumn(platform);
 
-  db.insert(schema.linkedAccounts)
-    .values({ id, [column.name]: platformId })
-    .run();
-  db.insert(schema.users).values({ id }).run();
+  db.transaction((tx) => {
+    tx.insert(schema.linkedAccounts)
+      .values({ id, [pK[platform]]: platformId })
+      .run();
+    tx.insert(schema.users).values({ id }).run();
+  });
 
   return id;
 }
@@ -58,7 +97,7 @@ export function linkPlatform(
   }
 
   db.update(schema.linkedAccounts)
-    .set({ [column.name]: platformId })
+    .set({ [pK[platform]]: platformId })
     .where(eq(schema.linkedAccounts.id, id))
     .run();
 }
@@ -105,6 +144,16 @@ function mergeAccounts(targetId: string, orphanId: string): void {
       .where(eq(schema.linkedAccounts.id, targetId))
       .run();
   }
+
+  db.run(sql`
+    INSERT INTO custom_reply_counters (reply_id, user_id, count)
+    SELECT reply_id, ${targetId}, SUM(count)
+    FROM custom_reply_counters
+    WHERE user_id = ${orphanId}
+    GROUP BY reply_id
+    ON CONFLICT(reply_id, user_id) DO UPDATE SET count = count + excluded.count
+  `);
+  db.run(sql`DELETE FROM custom_reply_counters WHERE user_id = ${orphanId}`);
 }
 
 export function getBalance(id: string): number {
