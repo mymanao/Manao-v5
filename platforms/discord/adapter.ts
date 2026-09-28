@@ -31,6 +31,8 @@ export class DiscordAdapter implements PlatformAdapter {
   private messageHandler?: MessageHandler;
   private readonly cooldowns = new Map<string, number>();
   private readonly sequenceIndex = new Map<string, number>();
+  private initPromise: Promise<void> | null = null;
+  private stopped = false;
 
   constructor(
     private readonly registry: CommandRegistry,
@@ -53,10 +55,18 @@ export class DiscordAdapter implements PlatformAdapter {
       silent: true,
     });
 
-    this.bot.once(Events.ClientReady, async () => {
-      await this.bot.guilds.fetch();
-      void this.bot.initApplicationCommands();
-      logger.info("[Discord] Adapter started");
+    this.bot.once(Events.ClientReady, () => {
+      this.initPromise = (async () => {
+        try {
+          await this.bot.guilds.fetch();
+          if (this.stopped) return;
+          await this.bot.initApplicationCommands();
+          logger.info("[Discord] Adapter started");
+        } catch (err) {
+          if (!this.stopped)
+            logger.error(`[Discord] Command init failed: ${err}`);
+        }
+      })();
     });
 
     this.bot.on("interactionCreate", (interaction: Interaction) => {
@@ -81,6 +91,9 @@ export class DiscordAdapter implements PlatformAdapter {
   }
 
   async stop(): Promise<void> {
+    this.stopped = true;
+    await this.initPromise;
+    this.bot?.removeAllListeners();
     await this.bot?.destroy();
     logger.info("[Discord] Adapter stopped");
   }

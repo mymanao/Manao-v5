@@ -234,9 +234,9 @@ export function CommandsPage() {
                   <TableRow key={cmd.name} hover>
                     <TableCell>
                       <Switch
-                        size="small"
-                        checked={enabled}
-                        onChange={() => toggleCommand(cmd.name, enabled)}
+                          size="small"
+                          checked={enabled}
+                          onChange={(e) => toggleCommand(cmd.name, e.target.checked)}
                       />
                     </TableCell>
                     <TableCell>

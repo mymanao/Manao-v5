@@ -36,7 +36,10 @@ import { api } from "@/hooks/useApi";
 import type { Configuration, CustomReplies } from "@/types/api";
 
 function uuid(): string {
-  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+  if (
+    typeof crypto !== "undefined" &&
+    typeof crypto.randomUUID === "function"
+  ) {
     return crypto.randomUUID();
   }
   const b = crypto.getRandomValues(new Uint8Array(16));
